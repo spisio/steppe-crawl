@@ -6,7 +6,7 @@ Twelve valleys run down from the Qara-Chik road into the dark. At the bottom of 
 
 ## Play
 
-Open `index.html` in a browser. It is a single file with no build step; fonts load from Google Fonts. Your game saves in the browser as you play.
+Play in your browser at **https://spisio.github.io/steppe-crawl/**, or open `index.html` locally. It is a single file with no build step; fonts load from Google Fonts. Your game saves in the browser as you play.
 
 ## Peoples and callings
 
