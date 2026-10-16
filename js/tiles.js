@@ -15,20 +15,20 @@ const BROWN_ROCK = [DW + 'stone2_brown_2_new', DW + 'stone2_brown_3_new', DW + '
 const GREY_ROCK = [DW + 'stone_gray_0', DW + 'stone_gray_1', DW + 'stone_gray_2', DW + 'stone_gray_3'];
 const DARK_ROCK = [DW + 'stone_dark_0', DW + 'stone_dark_1', DW + 'stone_dark_2', DW + 'stone_dark_3'];
 const SETS = {
-  meadow: { floor: GRASS, wall: BROWN_ROCK },
-  canyon: { floor: [0, 1, 2, 3, 4, 5].map(i => DF + `pebble_brown_${i}_new`), wall: [0, 1, 2, 3].map(i => DW + `pebble_red_${i}_new`) },
-  highland: { floor: [...GRASS, ...[0, 1, 2, 3].map(i => DF + `grey_dirt_${i}_new`)], wall: GREY_ROCK },
-  pass: { floor: [0, 1, 2, 3, 4, 5, 6, 7].map(i => DF + `grey_dirt_${i}_new`), wall: GREY_ROCK },
-  steppe: { floor: [1, 2, 3, 4, 5, 6, 7, 8].map(i => DF + `sand_${i}`), wall: [0, 1, 2, 3, 4].map(i => DW + `sandstone_wall_${i}`) },
-  plateau: { floor: [0, 1, 2, 3, 4, 5, 6, 7].map(i => DF + `frozen_${i}`), wall: GREY_ROCK },
-  manas: { floor: [0, 1, 2, 3, 4, 5, 6, 7].map(i => DF + `grey_dirt_b_${i}`), wall: DARK_ROCK },
-  temple: { floor: GRASS, wall: GREY_ROCK },
+  meadow: { floor: GRASS, wall: BROWN_ROCK, cliff: "meadow" },
+  canyon: { floor: [0, 1, 2, 3, 4, 5].map(i => DF + `pebble_brown_${i}_new`), wall: [0, 1, 2, 3].map(i => DW + `pebble_red_${i}_new`), cliff: "canyon" },
+  highland: { floor: [...GRASS, ...[0, 1, 2, 3].map(i => DF + `grey_dirt_${i}_new`)], wall: GREY_ROCK, cliff: "highland" },
+  pass: { floor: [0, 1, 2, 3, 4, 5, 6, 7].map(i => DF + `grey_dirt_${i}_new`), wall: GREY_ROCK, cliff: "highland" },
+  steppe: { floor: [1, 2, 3, 4, 5, 6, 7, 8].map(i => DF + `sand_${i}`), wall: [0, 1, 2, 3, 4].map(i => DW + `sandstone_wall_${i}`), cliff: "steppe" },
+  plateau: { floor: [0, 1, 2, 3, 4, 5, 6, 7].map(i => DF + `frozen_${i}`), wall: GREY_ROCK, cliff: "snowy" },
+  manas: { floor: [0, 1, 2, 3, 4, 5, 6, 7].map(i => DF + `grey_dirt_b_${i}`), wall: DARK_ROCK, cliff: "dark" },
+  temple: { floor: GRASS, wall: GREY_ROCK, cliff: "meadow" },
   tunnels: { floor: [DF + 'dirt_0_new', DF + 'dirt_1_new', DF + 'dirt_2_new'], wall: [0, 1, 2, 3, 4, 5].map(i => DW + `orc_${i}`), stone: [1, 2, 3, 4].map(i => DW + `stone_brick_${i}`) },
   woods: { floor: [...[0, 1, 2, 3].map(i => DF + `lair_${i}_new`), ...GRASS], wall: [0, 1, 2, 3].map(i => DW + `lair_${i}_new`) },
   sands: { floor: [1, 2, 3, 4, 5, 6, 7, 8].map(i => DF + `sand_${i}`), wall: [0, 1, 2, 3, 4, 5].map(i => DW + `sandstone_wall_${i}`) },
   kurgan: { floor: [0, 1, 2, 3, 4, 5].map(i => DF + `sandstone_floor_${i}`), wall: [0, 1, 2, 3].map(i => DW + `undead_brown_${i}`), stone: [0, 1, 2, 3].map(i => DW + `tomb_${i}`) },
-  blizzard: { floor: [...[0, 1, 2, 3].map(i => DF + `ice_${i}_new`), ...[0, 1, 2, 3, 4, 5].map(i => DF + `frozen_${i}`)], wall: DARK_ROCK },
-  hidden: { floor: [0, 1, 2, 3, 4, 5, 6, 7].map(i => DF + `limestone_${i}`), wall: DARK_ROCK, stone: [0, 1, 2, 3, 4].map(i => DW + `church_${i}`) },
+  blizzard: { floor: [...[0, 1, 2, 3].map(i => DF + `ice_${i}_new`), ...[0, 1, 2, 3, 4, 5].map(i => DF + `frozen_${i}`)], wall: DARK_ROCK, cliff: "dark" },
+  hidden: { floor: [0, 1, 2, 3, 4, 5, 6, 7].map(i => DF + `limestone_${i}`), wall: DARK_ROCK, stone: [0, 1, 2, 3, 4].map(i => DW + `church_${i}`), cliff: "hidden" },
 };
 const STONE_DEFAULT = [1, 2, 3, 4].map(i => DW + `stone_brick_${i}`);
 function setFor(lev) {
@@ -109,7 +109,7 @@ const SHIELD_TILE = { kichikalkan: 'buckler_round_2', kalkan: 'lshield_quartered
 // Every Crawl tile this file can ask for, so they can be preloaded (and copied into the repo).
 function allTilePaths() {
   const s = new Set();
-  for (const k in SETS) for (const part of ['floor', 'wall', 'stone']) (SETS[k][part] || []).forEach(p => s.add(p));
+  for (const k in SETS) for (const part of ['floor', 'wall', 'stone']) { if (part === 'wall' && SETS[k].cliff) continue; (SETS[k][part] || []).forEach(p => s.add(p)); }
   STONE_DEFAULT.forEach(p => s.add(p)); WATER.deep.forEach(p => s.add(p)); WATER.shallow.forEach(p => s.add(p));
   for (const o of [ALTAR_TILE, SHOP_TILE, TRAP_TILE, CLOUD_TILE, WEAPON_ITEM]) Object.values(o).forEach(p => s.add(p));
   for (const v of Object.values(MON_TILE)) { const p = Array.isArray(v) ? v[0] : v; if (!p.startsWith('custom:')) s.add(p); }
@@ -160,10 +160,26 @@ const pickV = (arr, x, y, s = 0) => arr[hash(x, y, s) % arr.length];
 
 // --- what to draw for each thing ---
 function terrainSpecs(lev, x, y) {
+  const out = terrainSpecsBase(lev, x, y), t = lev.t[idx(x, y)], S = setFor(lev);
+  if (t === T.WALL) return out;
+  // cliff shadow on the ground at the foot of a cliff face
+  if (S.cliff && y > 0 && lev.t[idx(x, y - 1)] === T.WALL) out.splice(1, 0, 'fx:shadow');
+  // make the ways on and back easy to spot: a glow on the ground and a frame
+  if (t === T.DOWN || t === T.BRANCH || t === T.UP) {
+    const kind = t === T.UP ? 'back' : 'on';
+    out.splice(out.length - 1, 0, 'fx:glow_' + kind); out.push('fx:frame_' + kind);
+  }
+  return out;
+}
+function terrainSpecsBase(lev, x, y) {
   const i = idx(x, y), t = lev.t[i], S = setFor(lev), seed = lev.d * 7 + lev.br.length;
   const floor = pickV(S.floor, x, y, seed);
   switch (t) {
-    case T.WALL: return [pickV(S.wall, x, y, seed)];
+    case T.WALL: {
+      if (!S.cliff) return [pickV(S.wall, x, y, seed)];
+      const open = y + 1 < H && lev.t[idx(x, y + 1)] !== T.WALL;
+      return [`custom:cliff_${open ? 'face' : 'top'}_${S.cliff}_${hash(x, y, seed) % 3}`];
+    }
     case T.STONE: return [pickV(S.stone || STONE_DEFAULT, x, y, seed)];
     case T.FELT: return ['custom:felt'];
     case T.DEEP: return [pickV(WATER.deep, x, y, seed)];
@@ -230,7 +246,29 @@ function resize() {
   cell = { fs: Math.round(ts * 0.55), w: ts, h: ts };
   ctx.setTransform(dpr, 0, 0, dpr, 0, 0); ctx.imageSmoothingEnabled = false; render();
 }
+const MARK = { on: [255, 210, 110], back: [180, 215, 255] };
+function drawFx(fxName, sx, sy) {
+  const X = sx * cell.w, Y = sy * cell.h, w = cell.w, h = cell.h;
+  if (fxName === 'shadow') {
+    const g = ctx.createLinearGradient(0, Y, 0, Y + h * 0.45); g.addColorStop(0, 'rgba(0,0,0,.45)'); g.addColorStop(1, 'rgba(0,0,0,0)');
+    ctx.fillStyle = g; ctx.fillRect(X, Y, w, h * 0.45); return;
+  }
+  const [kind, which] = fxName.split('_'), [r, gg, b] = MARK[which];
+  if (kind === 'glow') {
+    const g = ctx.createRadialGradient(X + w / 2, Y + h / 2, 1, X + w / 2, Y + h / 2, w * 0.75);
+    g.addColorStop(0, `rgba(${r},${gg},${b},.9)`); g.addColorStop(.55, `rgba(${r},${gg},${b},.45)`); g.addColorStop(1, `rgba(${r},${gg},${b},0)`);
+    ctx.fillStyle = g; ctx.fillRect(X - w * 0.25, Y - h * 0.25, w * 1.5, h * 1.5);
+  } else if (kind === 'frame') {
+    ctx.strokeStyle = `rgb(${r},${gg},${b})`; ctx.lineWidth = 2.5;
+    const k = Math.max(4, w / 4); // corner brackets
+    for (const [cx, cy, dx, dy] of [[X + 1, Y + 1, 1, 1], [X + w - 1, Y + 1, -1, 1], [X + 1, Y + h - 1, 1, -1], [X + w - 1, Y + h - 1, -1, -1]]) {
+      ctx.beginPath(); ctx.moveTo(cx + dx * k, cy); ctx.lineTo(cx, cy); ctx.lineTo(cx, cy + dy * k); ctx.stroke();
+    }
+    ctx.lineWidth = 1;
+  }
+}
 function drawSpec(spec, sx, sy, alpha) {
+  if (typeof spec === 'string' && spec.startsWith('fx:')) { drawFx(spec.slice(3), sx, sy); return true; }
   const src = spec && tileSource(spec); if (!src) return false;
   if (alpha !== undefined) ctx.globalAlpha = alpha;
   ctx.drawImage(src, sx * cell.w, sy * cell.h, cell.w, cell.h);

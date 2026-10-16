@@ -230,3 +230,92 @@ ctile('whiteyurts', (P, E) => {
   E(16, 16, 12, 9, '#f2ece0'); P(4, 16, 25, 9, '#f2ece0'); P(4, 18, 25, 2, '#a3263a'); P(13, 6, 6, 3, '#e0d6c4');
   P(13, 18, 6, 7, '#6e4a2a'); P(14, 19, 4, 6, '#3a2614'); P(4, 24, 25, 1, '#c8bca6');
 });
+
+// --- natural cliffs for the outdoor valleys ---
+// 'face' is the cliff seen from the open ground in front of it (strata, cracks, a dark foot);
+// 'top' is the rocky upland behind the edge. Several seeded variants per palette.
+const CLIFF_PALETTES = {
+  meadow: { base: "#7a6f5e", dark: "#4a4238", light: "#a39783", top: "#5d5a4c", topLight: "#7f7a66", tuft: "#5f7a3a" },
+  canyon: { base: "#9a4c38", dark: "#5e2a1e", light: "#c47052", top: "#6e3c2e", topLight: "#8e5644", tuft: "#7a6a3a" },
+  highland: { base: "#7e7c76", dark: "#4a4844", light: "#aaa79e", top: "#5c5b55", topLight: "#7a7870", tuft: "#62724a" },
+  steppe: { base: "#9a8460", dark: "#5e4c32", light: "#c4ad84", top: "#7a6848", topLight: "#988462", tuft: "#8a8a5a" },
+  snowy: { base: "#7e8794", dark: "#4a525c", light: "#b4bcc6", top: "#dfe6ee", topLight: "#ffffff", tuft: "#c8d0da", snow: 1 },
+  dark: { base: "#545c6e", dark: "#2c323e", light: "#7e86a0", top: "#c8d0dc", topLight: "#eef2fa", tuft: "#aab4c4", snow: 1 },
+  hidden: { base: "#54486a", dark: "#2e2640", light: "#7a6a92", top: "#3c344c", topLight: "#55496a", tuft: "#4a5a4a" },
+};
+function seeded(s) { return () => { s |= 0; s = s + 0x6D2B79F5 | 0; let t = Math.imul(s ^ s >>> 15, 1 | s); t = t + Math.imul(t ^ t >>> 7, 61 | t) ^ t; return ((t ^ t >>> 14) >>> 0) / 4294967296; }; }
+function cliffTop(P, E, pal, r) {
+  // rugged upland: dark broken rock with lit edges, a few grass tufts or snow patches
+  P(0, 0, 32, 32, pal.top);
+  for (let k = 0; k < 6; k++) { // rock slabs
+    const x = Math.floor(r() * 26), y = Math.floor(r() * 26), w = 5 + Math.floor(r() * 7), h = 4 + Math.floor(r() * 5);
+    P(x, y, w, h, pal.snow ? pal.topLight : pal.base); P(x, y, w, 1, pal.light); P(x, y + h - 1, w, 1, pal.dark); P(x + w - 1, y, 1, h, pal.dark);
+  }
+  for (let k = 0; k < 30; k++) P(Math.floor(r() * 31), Math.floor(r() * 31), 1 + Math.floor(r() * 2), 1, r() < .5 ? pal.dark : pal.topLight);
+  for (let k = 0; k < 4; k++) { const x = Math.floor(r() * 29), y = Math.floor(r() * 29); P(x, y, 1, 2, pal.tuft); P(x + 1, y - 1, 1, 3, pal.tuft); P(x + 2, y, 1, 2, pal.tuft); }
+}
+function cliffFace(P, E, pal, r) {
+  // the cliff seen from below: the upland edge on top, then bold rock columns and crevices, dark at the foot
+  P(0, 0, 32, 32, pal.base);
+  P(0, 0, 32, 6, pal.top); for (let x = 0; x < 32; x += 2) P(x, 5 + Math.floor(r() * 2), 2, 1, pal.top);
+  if (!pal.snow) for (let x = 0; x < 32; x += 3) if (r() < .6) P(x, 4, 1, 2, pal.tuft);
+  P(0, 6, 32, 2, pal.light);
+  let x = 0;
+  const shades = [pal.base, pal.light, pal.dark, pal.base];
+  while (x < 32) { // irregular columns of rock, each its own shade and height, with crevices between
+    const w = 4 + Math.floor(r() * 6), top = 7 + Math.floor(r() * 4), sh = shades[Math.floor(r() * shades.length)];
+    P(x, top, w, 32 - top, sh); P(x, top, w, 1, pal.light);
+    P(x, top, 1, 32 - top, pal.dark);
+    for (let k = 0; k < 2; k++) if (r() < .7) { const fy = top + 3 + Math.floor(r() * 14); P(x + 1, fy, w - 1, 1, pal.dark); P(x + 1, fy + 1, w - 2, 1, pal.light); }
+    x += w;
+  }
+  for (let k = 0; k < 3; k++) { const yy = 12 + Math.floor(r() * 10), xx = Math.floor(r() * 24); P(xx, yy, 5 + Math.floor(r() * 6), 1, pal.light); P(xx, yy + 1, 5, 1, pal.dark); }
+  for (let y = 26; y < 32; y++) P(0, y, 32, 1, y < 28 ? pal.dark : '#1e1a16');
+  if (pal.snow) for (let xx = 0; xx < 32; xx++) if (r() < .6) P(xx, 6, 1, 1 + Math.floor(r() * 3), '#ffffff');
+}
+for (const pk in CLIFF_PALETTES) for (let v = 0; v < 3; v++) {
+  ctile(`cliff_top_${pk}_${v}`, (P, E) => cliffTop(P, E, CLIFF_PALETTES[pk], seeded(v * 101 + pk.length * 7)));
+  ctile(`cliff_face_${pk}_${v}`, (P, E) => cliffFace(P, E, CLIFF_PALETTES[pk], seeded(v * 211 + pk.length * 13)));
+}
+
+// --- bigger, bolder way markers (these replace the earlier small versions) ---
+ctile('trail', (P, E) => {
+  // a tall cairn with white ribbons on a pole, and a worn path running past it
+  pathStrip(P, [[16, 22], [15, 24], [14, 26], [15, 28], [16, 30]], 6);
+  E(16, 21, 11, 5, '#5f5b54'); E(16, 17, 9, 5, '#7d7970'); E(16, 13, 7, 4, '#9a968a'); E(16, 9, 5, 3, '#b3aea2');
+  P(9, 18, 4, 1, '#b3aea2'); P(19, 14, 4, 1, '#c8c3b6');
+  P(15, 1, 2, 9, '#6e4a2a');
+  for (const [y, len] of [[2, 9], [5, 7]]) for (let i = 0; i < len; i++) P(17 + i, y + (i % 3 === 2 ? 1 : 0), 1, 2, '#ffffff');
+});
+ctile('track', (P) => {
+  // two deep wheel ruts and a tall milestone with a ribbon
+  for (let y = 0; y < 32; y++) { const off = Math.round(Math.sin(y / 6) * 3); P(6 + off, y, 4, 1, PATH_D); P(15 + off, y, 4, 1, PATH_D); P(7 + off, y, 2, 1, PATH); P(16 + off, y, 2, 1, PATH); }
+  P(22, 6, 8, 22, '#7d7970'); P(23, 4, 6, 3, '#7d7970'); P(22, 6, 2, 22, '#a19c90'); P(28, 6, 2, 22, '#5f5b54');
+  P(24, 12, 4, 1, '#3c3a35'); P(24, 15, 4, 1, '#3c3a35'); P(24, 18, 3, 1, '#3c3a35');
+  P(26, 2, 2, 4, '#ffffff'); P(28, 3, 3, 1, '#ffffff');
+});
+ctile('road', (P) => {
+  // the Qara-Chik road home: ruts and a big signpost with two boards
+  for (let y = 0; y < 32; y++) { P(4, y, 3, 1, PATH_D); P(13, y, 3, 1, PATH_D); }
+  P(21, 4, 3, 28, '#6e4a2a'); P(19, 29, 7, 2, '#4a3018');
+  P(13, 5, 17, 7, '#a8763e'); P(13, 5, 17, 1, '#c99050'); P(11, 7, 2, 3, '#a8763e'); P(10, 8, 1, 1, '#a8763e');
+  P(16, 14, 15, 6, '#946632'); P(16, 14, 15, 1, '#b8844e'); P(31, 16, 1, 2, '#946632');
+  for (let x = 15; x < 28; x += 3) P(x, 8, 2, 1, '#3a2614'); for (let x = 18; x < 29; x += 3) P(x, 17, 2, 1, '#3a2614');
+});
+ctile('ford', (P) => {
+  P(0, 7, 32, 18, '#3f6fc8'); P(0, 7, 32, 2, '#7aaae8'); P(0, 23, 32, 2, '#2f5aa8');
+  for (let x = 1; x < 32; x += 6) P(x, 16, 3, 1, '#a8c8f0');
+  for (const [x, y] of [[2, 10], [10, 14], [18, 10], [25, 14]]) { P(x, y, 7, 6, '#7d7970'); P(x, y, 7, 2, '#b8b3a6'); P(x, y + 5, 7, 1, '#4f4b45'); }
+  pathStrip(P, [[16, 0], [16, 2], [16, 4], [16, 26], [16, 28], [16, 30]], 6);
+});
+// Dark outline around free-standing markers so they read against any ground.
+function outlineTile(name, col = [26, 20, 15]) {
+  const c = CUSTOM_TILES[name], g = c.getContext('2d'), d = g.getImageData(0, 0, 32, 32), a = d.data, src = new Uint8ClampedArray(a);
+  const solid = (x, y) => x >= 0 && y >= 0 && x < 32 && y < 32 && src[(y * 32 + x) * 4 + 3] > 200;
+  for (let y = 0; y < 32; y++) for (let x = 0; x < 32; x++) {
+    const i = (y * 32 + x) * 4; if (src[i + 3] > 0) continue;
+    if (solid(x - 1, y) || solid(x + 1, y) || solid(x, y - 1) || solid(x, y + 1)) { a[i] = col[0]; a[i + 1] = col[1]; a[i + 2] = col[2]; a[i + 3] = 230; }
+  }
+  g.putImageData(d, 0, 0);
+}
+for (const n of ['pass', 'trail', 'track', 'road', 'mound', 'woodpath', 'snowcairn', 'shaft', 'whiteyurts', 'dryriver']) outlineTile(n);
