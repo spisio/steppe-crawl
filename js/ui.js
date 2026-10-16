@@ -328,7 +328,7 @@ function titleScreen() {
   G = null; stopRunSafe(); tgt = null; render();
   document.getElementById('side').innerHTML = ''; document.getElementById('log').innerHTML = '';
   const sv = loadSave(); let name = randomName(); let sp = null;
-  const head = `<div class="title">Steppe Crawl</div><p class="dim">A roguelike set in Irad.</p>
+  const head = `<div class="title">Steppe Crawl</div><p class="dim">A roguelike set in Irad. ${window.TILES ? '<a href="index.html" style="color:var(--gold)">Play in ASCII</a>' : '<a href="tiles.html" style="color:var(--gold)">Play with tiles</a>'} · your saved game works in both.</p>
   <p>Twelve valleys run down from the Qara-Chik road into the dark. Clan tamgas lie in four wild regions; three of them open the hidden track to the ruin of the First Church, where the <span class="star">Ene Malka</span>, the Mother Leaven of St. Janyl, waits with the bull-headed Herald of Morkhan. Bring the leaven home.</p>`;
   const step1 = () => {
     ui = { title: 'title' }; ov.hidden = false;

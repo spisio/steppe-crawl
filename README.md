@@ -6,7 +6,7 @@ Twelve valleys run down from the Qara-Chik road into the dark. Clan tamgas lie i
 
 ## Play
 
-Play in your browser at **https://spisio.github.io/steppe-crawl/**, or open `index.html` locally. There is no build step; fonts load from Google Fonts. Your game saves in the browser as you play.
+Play in your browser in ASCII at **https://spisio.github.io/steppe-crawl/** or with graphical tiles at **https://spisio.github.io/steppe-crawl/tiles.html**, or open `index.html` / `tiles.html` locally. Both versions share the same saved game. There is no build step; fonts load from Google Fonts. Your game saves in the browser as you play.
 
 ## What's in it
 
@@ -43,3 +43,7 @@ On a phone, use the on-screen pad and buttons (More has every command), or tap t
 ## Code
 
 Plain JavaScript, no dependencies. Data tables live in `js/data/` (species, skills, items, monsters, spells, patrons, regions and vaults); the engine is split into `levelgen`, `fov`, `player`, `items`, `combat`, `monsters`, `magic`, `religion`, `world`, `ui` and `input`.
+
+## Tiles
+
+The tiles version uses the public-domain (CC0) [Dungeon Crawl 32x32 tiles](https://opengameart.org/content/dungeon-crawl-32x32-tiles) from Dungeon Crawl Stone Soup, made by many artists; see `tiles/dcss/LICENSE.txt`. Only the tiles the game uses are included. Things the set has no tile for (yurts and felt doors, mazars, balbals, steppe trees, horses and the tulpar, golden eagles, the kumai, big cats, clan tamgas, the komuz and the Ene Malka) are drawn in code in `js/tiles-custom.js`. The tile mapping and renderer are in `js/tiles.js`.
