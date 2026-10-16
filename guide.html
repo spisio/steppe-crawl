@@ -7,27 +7,18 @@
 <meta name="description" content="Instructions and game guide for Steppe Crawl, a roguelike set in Irad.">
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;600;700&family=Spectral+SC:wght@500;700&display=swap">
 <link rel="stylesheet" href="css/style.css">
-<style>
-  html, body { height: auto; }
-  body { overflow: auto; }
-  .gpage { max-width: 960px; margin: 0 auto; padding-inline: 16px; padding-block: 24px 64px; }
-  .gpage header { display: flex; flex-wrap: wrap; align-items: baseline; justify-content: space-between; gap: 8px 24px; border-bottom: 1px solid var(--line); padding-bottom: 12px; }
-  .gpage .play { font: 600 14px var(--mono); padding: 8px 14px; border: 1px solid var(--gold); border-radius: 3px; text-decoration: none; }
-  .gpage nav { display: flex; flex-wrap: wrap; gap: 6px 14px; margin: 14px 0 6px; font-size: 12px; }
-  .gpage section { border-top: 1px solid var(--line); padding-top: 18px; margin-top: 22px; }
-  .gpage h2 { font: 700 22px/1.2 var(--disp); color: var(--milk); margin: 0 0 6px; }
-  .gpage .guide { max-width: none; }
-</style>
 </head>
-<body>
+<body class="page">
 <main class="gpage">
-  <header>
-    <div><div class="title">Steppe Crawl</div><p class="dim" style="margin:.3em 0 0">Instructions and game guide</p></div>
-    <a class="play" href="index.html">Play the game</a>
+  <header class="hhead">
+    <div><h1 class="title">Steppe Crawl</h1><p class="hsub">Instructions and game guide</p></div>
+    <nav class="hlinks" aria-label="Pages"><a class="primary" href="index.html">Play the game</a><a href="guide.html" aria-current="page">Game guide</a><a href="scores.html">All scores</a></nav>
   </header>
-  <nav id="toc" aria-label="Chapters"></nav>
-  <div id="chapters"></div>
-  <p class="dim" style="margin-top:32px">Steppe Crawl is a roguelike set in Irad, in the tradition of <a href="https://github.com/crawl/crawl">Dungeon Crawl Stone Soup</a>. Tiles: the public-domain <a href="https://opengameart.org/content/dungeon-crawl-32x32-tiles">Dungeon Crawl 32x32 tiles</a>. Prefer ASCII? <a href="ascii.html">Play the ASCII version</a>.</p>
+  <div class="glayout">
+    <nav id="toc" class="gtoc" aria-label="Chapters"></nav>
+    <div id="chapters" class="gchapters"></div>
+  </div>
+  <p class="pnote">Steppe Crawl is a roguelike set in Irad, in the tradition of <a href="https://github.com/crawl/crawl">Dungeon Crawl Stone Soup</a>. Tiles: the public-domain <a href="https://opengameart.org/content/dungeon-crawl-32x32-tiles">Dungeon Crawl 32x32 tiles</a>. Prefer ASCII? <a href="ascii.html">Play the ASCII version</a>.</p>
 </main>
 <script src="js/util.js"></script>
 <script src="js/data/skills.js"></script>
@@ -39,8 +30,9 @@
 <script src="js/data/world.js"></script>
 <script src="js/guide.js"></script>
 <script>
+  document.body.insertAdjacentHTML('afterbegin', skySVG());
   document.getElementById('toc').innerHTML = GUIDE.map(c => `<a href="#${c.id}">${c.n}</a>`).join('');
-  document.getElementById('chapters').innerHTML = GUIDE.map(c => `<section id="${c.id}"><h2>${c.n}</h2><div class="guide">${c.html()}</div></section>`).join('');
+  document.getElementById('chapters').innerHTML = GUIDE.map(c => `<section id="${c.id}" class="pcard2"><h2>${c.n}</h2><div class="guide">${c.html()}</div></section>`).join('');
   if (location.hash) { const el = document.getElementById(location.hash.slice(1)); if (el) el.scrollIntoView(); }
 </script>
 </body>

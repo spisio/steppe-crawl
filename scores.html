@@ -7,37 +7,26 @@
 <meta name="description" content="Top scores and recent deaths in Steppe Crawl, a roguelike set in Irad.">
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;600;700&family=Spectral+SC:wght@500;700&display=swap">
 <link rel="stylesheet" href="css/style.css">
-<style>
-  html, body { height: auto; }
-  body { overflow: auto; }
-  .gpage { max-width: 1100px; margin: 0 auto; padding-inline: 16px; padding-block: 24px 64px; }
-  .gpage header { display: flex; flex-wrap: wrap; align-items: baseline; justify-content: space-between; gap: 8px 24px; border-bottom: 1px solid var(--line); padding-bottom: 12px; }
-  .gpage .play { font: 600 14px var(--mono); padding: 8px 14px; border: 1px solid var(--gold); border-radius: 3px; text-decoration: none; }
-  .gpage section { margin-top: 26px; }
-  .gpage h2 { font: 700 22px/1.2 var(--disp); color: var(--milk); margin: 0 0 6px; }
-  .gpage a { color: var(--gold); }
-  .gtable .nr { text-align: right; font-variant-numeric: tabular-nums; }
-  .gtable td.rank { color: var(--gold); font-weight: 600; }
-  .gtable td.nm { color: var(--milk); font-weight: 600; }
-  .mine td.nm::after { content: ' (you)'; color: var(--dim); font-weight: 400; }
-</style>
 </head>
-<body>
+<body class="page">
 <main class="gpage">
-  <header>
-    <div><div class="title">Steppe Crawl</div><p class="dim" style="margin:.3em 0 0">Scores</p></div>
-    <a class="play" href="index.html">Play the game</a>
+  <header class="hhead">
+    <div><h1 class="title">Steppe Crawl</h1><p class="hsub">The scoreboard</p></div>
+    <nav class="hlinks" aria-label="Pages"><a class="primary" href="index.html">Play the game</a><a href="guide.html">Game guide</a><a href="scores.html" aria-current="page">All scores</a></nav>
   </header>
-  <p id="status" class="dim">Loading scores…</p>
-  <section><h2>Top 10 scores</h2><div id="top"></div></section>
-  <section><h2>10 most recent deaths</h2><div id="recent"></div></section>
-  <section id="minewrap" hidden><h2>Your recent games</h2><p class="dim">Games finished in this browser.</p><div id="mine"></div></section>
-  <p class="dim" style="margin-top:32px">Scores count experience, silver, kills, places reached, clan tamgas and, most of all, bringing the Ene Malka home. <a href="guide.html">Read the game guide</a>.</p>
+  <div class="slayout">
+    <p id="status" class="pstatus">Loading scores…</p>
+    <section class="pcard2"><p class="kick">Top 10</p><h2>Highest scores</h2><div id="top"></div></section>
+    <section class="pcard2"><p class="kick red">Recent deaths</p><h2>Fallen on the road</h2><div id="recent"></div></section>
+    <section class="pcard2" id="minewrap" hidden><p class="kick">This browser</p><h2>Your recent games</h2><div id="mine"></div></section>
+  </div>
+  <p class="pnote">Scores count experience, silver, kills, places reached, clan tamgas and, most of all, bringing the Ene Malka home. <a href="guide.html">Read the game guide</a>.</p>
 </main>
 <script src="js/config.js"></script>
 <script src="js/util.js"></script>
 <script src="js/scores.js"></script>
 <script>
+  document.body.insertAdjacentHTML('afterbegin', skySVG());
   const row = (e, i) => [i === null ? '' : i + 1, e.name, e.score, `${e.species} ${e.background}`, e.xl,
     e.won ? 'brought the leaven home' : e.cause, `${e.place}, ${e.days} day${e.days === 1 ? '' : 's'} from home`, e.tamgas || 0, e.god || '—', e.kills, e.turns, ago(e.created_at)];
   const HEAD = ['#', 'Name', 'Score', 'People and calling', 'Level', 'Fate', 'Where', 'Tamgas', 'Patron', 'Kills', 'Turns', 'When'];

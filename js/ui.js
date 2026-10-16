@@ -314,13 +314,7 @@ function titleScreen() {
   G = null; stopRunSafe(); tgt = null; render();
   document.getElementById('side').innerHTML = ''; document.getElementById('log').innerHTML = '';
   const sv = loadSave(); let name = randomName(); let sp = null;
-  // The night-steppe horizon behind the title: stars, a crescent moon, two ridges of hills.
-  const sky = `<svg class="sky" aria-hidden="true" viewBox="0 0 1280 300" preserveAspectRatio="xMidYMax slice">
-    <circle cx="1040" cy="78" r="34" fill="#f5efe0" opacity=".9"/><circle cx="1052" cy="70" r="30" fill="#100f17"/>
-    <g fill="#f5efe0" opacity=".55">${[[120, 40, 1.4], [260, 90, 1], [400, 30, 1.6], [560, 70, 1], [700, 24, 1.3], [860, 110, 1], [930, 40, 1.2], [1180, 130, 1.4], [1230, 40, 1], [40, 120, 1], [640, 130, 1.2], [330, 150, 1], [1110, 20, 1.1]].map(([x, y, r]) => `<circle cx="${x}" cy="${y}" r="${r}"/>`).join('')}</g>
-    <path d="M0 230 L120 170 L190 200 L300 120 L380 180 L470 150 L560 200 L660 110 L760 175 L850 140 L960 200 L1060 130 L1160 190 L1280 150 L1280 300 L0 300 Z" fill="#1d1a2a"/>
-    <path d="M660 110 L690 132 L676 134 L700 150 L640 140 Z" fill="#f5efe0" opacity=".18"/>
-    <path d="M0 260 C200 240 360 270 560 250 C760 232 980 268 1280 245 L1280 300 L0 300 Z" fill="#15131f"/></svg>`;
+  const sky = skySVG();
   const head = `<header class="hhead"><div><h1 class="title">Steppe Crawl</h1><p class="hsub">A roguelike set in Irad.</p></div>
   <nav class="hlinks" aria-label="Pages"><a href="guide.html" target="_blank" rel="noopener">Game guide</a>${window.TILES ? '<a href="ascii.html">Play in ASCII</a>' : '<a href="index.html">Play with tiles</a>'}<a href="scores.html" target="_blank" rel="noopener">All scores</a></nav></header>`;
   const step1 = () => {
