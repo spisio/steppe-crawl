@@ -319,3 +319,22 @@ function outlineTile(name, col = [26, 20, 15]) {
   g.putImageData(d, 0, 0);
 }
 for (const n of ['pass', 'trail', 'track', 'road', 'mound', 'woodpath', 'snowcairn', 'shaft', 'whiteyurts', 'dryriver']) outlineTile(n);
+
+// --- bazaar stalls: a full-tile market stall with a striped awning, coloured by trade ---
+// (the goods icon from Crawl's shop tiles is drawn on the counter by the renderer)
+const STALL_COLOURS = {
+  general: ['#b8283c', '#f2e8d4'], smith: ['#3e3a40', '#e08a3a'], saddler: ['#7a4e2a', '#f0e0c0'],
+  tabyp: ['#3f7a3c', '#eef4e4'], books: ['#2f4f8a', '#eef0f6'], zerger: ['#6a3a8a', '#f0c850'],
+};
+for (const ty in STALL_COLOURS) ctile('stall_' + ty, (P, E) => {
+  const [a, b] = STALL_COLOURS[ty];
+  E(16, 30, 15, 2, 'rgba(0,0,0,.4)');
+  P(2, 8, 2, 22, '#5b3d22'); P(28, 8, 2, 22, '#5b3d22');                       // poles
+  P(4, 13, 24, 14, '#2a1e14');                                                 // shaded back of the stall
+  for (let x = 0; x < 32; x += 4) P(x, 2, 4, 9, (x / 4) % 2 ? b : a);          // striped awning
+  P(0, 2, 32, 1, 'rgba(255,255,255,.35)');
+  for (let x = 0; x < 32; x += 4) { P(x, 11, 4, 2, (x / 4) % 2 ? b : a); P(x + 1, 13, 2, 1, (x / 4) % 2 ? b : a); } // scalloped edge
+  P(0, 10, 32, 1, 'rgba(0,0,0,.25)');
+  P(3, 22, 26, 3, '#b8844e'); P(3, 22, 26, 1, '#d8a46a'); P(4, 25, 24, 5, '#8a5a30'); // counter
+  for (let x = 6; x < 28; x += 5) P(x, 26, 1, 4, '#6a4424');
+});

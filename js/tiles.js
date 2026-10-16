@@ -192,7 +192,8 @@ function terrainSpecsBase(lev, x, y) {
     case T.MAZAR: return [floor, 'custom:mazar'];
     case T.USED: return [floor, 'custom:mazar_used'];
     case T.ALTAR: return [floor, ALTAR_TILE[lev.altars[i]] || 'dungeon/altars/altar_base'];
-    case T.SHOP: { const s = lev.shops.find(s => s.x === x && s.y === y); return [floor, SHOP_TILE[s ? s.ty : 'general']]; }
+    case T.SHOP: { const s = lev.shops.find(s => s.x === x && s.y === y), ty = s ? s.ty : 'general';
+      return [floor, 'custom:stall_' + ty, 'fx:goods|' + SHOP_TILE[ty]]; }
     case T.DOORC: return [floor, 'custom:door_c'];
     case T.DOORO: return [floor, 'custom:door_o'];
     case T.STATUE: return [floor, 'custom:balbal'];
@@ -252,6 +253,9 @@ function drawFx(fxName, sx, sy) {
   if (fxName === 'shadow') {
     const g = ctx.createLinearGradient(0, Y, 0, Y + h * 0.45); g.addColorStop(0, 'rgba(0,0,0,.45)'); g.addColorStop(1, 'rgba(0,0,0,0)');
     ctx.fillStyle = g; ctx.fillRect(X, Y, w, h * 0.45); return;
+  }
+  if (fxName.startsWith('goods|')) { // a shop's goods icon, set on the stall counter
+    const im = IMG[fxName.slice(6)]; if (im) ctx.drawImage(im, X + w * 0.15, Y + h * 0.24, w * 0.7, h * 0.7); return;
   }
   const [kind, which] = fxName.split('_'), [r, gg, b] = MARK[which];
   if (kind === 'glow') {
