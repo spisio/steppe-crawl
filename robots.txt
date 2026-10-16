@@ -1,0 +1,5 @@
+User-agent: *
+Allow: /
+Disallow: /tiles.html
+
+Sitemap: https://steppecrawl.online/sitemap.xml
