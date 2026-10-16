@@ -1,0 +1,64 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Steppe Crawl ASCII</title>
+<meta name="description" content="A roguelike set in Irad, in the tradition of Dungeon Crawl Stone Soup.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;600;700&family=Spectral+SC:wght@500;700&display=swap">
+<link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+<div id="app">
+  <div id="mapwrap"><canvas id="map" aria-label="Map"></canvas><div id="lookbox" hidden></div></div>
+  <aside id="side" aria-live="polite"></aside>
+  <div id="log" aria-live="polite"></div>
+  <div id="bar">
+    <div id="pad">
+      <button data-k="y" aria-label="Move up-left">↖</button><button data-k="k" aria-label="Move up">↑</button><button data-k="u" aria-label="Move up-right">↗</button>
+      <button data-k="h" aria-label="Move left">←</button><button data-k="s" aria-label="Wait">·</button><button data-k="l" aria-label="Move right">→</button>
+      <button data-k="b" aria-label="Move down-left">↙</button><button data-k="j" aria-label="Move down">↓</button><button data-k="n" aria-label="Move down-right">↘</button>
+    </div>
+    <button data-k="o"><kbd>o</kbd>Explore</button>
+    <button data-k="Tab"><kbd>Tab</kbd>Fight</button>
+    <button data-k="5"><kbd>5</kbd>Rest</button>
+    <button data-k="g"><kbd>g</kbd>Pick up</button>
+    <button data-k="i"><kbd>i</kbd>Pack</button>
+    <button data-k="z"><kbd>z</kbd>Cast</button>
+    <button data-k="f"><kbd>f</kbd>Fire</button>
+    <button data-k="a"><kbd>a</kbd>Ability</button>
+    <button data-k="m"><kbd>m</kbd>Skills</button>
+    <button data-k=">"><kbd>&gt;</kbd>Onward</button>
+    <button data-k="<"><kbd>&lt;</kbd>Back</button>
+    <button data-k="More"><kbd>…</kbd>More</button>
+  </div>
+  <div id="tbar" hidden>
+    <button data-k="Enter"><kbd>Enter</kbd>Confirm</button>
+    <button data-k="Tab"><kbd>Tab</kbd>Next target</button>
+    <button data-k="Escape"><kbd>Esc</kbd>Cancel</button>
+  </div>
+</div>
+<div id="ov" hidden></div>
+<script src="js/util.js"></script>
+<script src="js/data/skills.js"></script>
+<script src="js/data/species.js"></script>
+<script src="js/data/items.js"></script>
+<script src="js/data/monsters.js"></script>
+<script src="js/data/spells.js"></script>
+<script src="js/data/gods.js"></script>
+<script src="js/data/world.js"></script>
+<script src="js/fov.js"></script>
+<script src="js/levelgen.js"></script>
+<script src="js/player.js"></script>
+<script src="js/items.js"></script>
+<script src="js/combat.js"></script>
+<script src="js/monsters.js"></script>
+<script src="js/magic.js"></script>
+<script src="js/religion.js"></script>
+<script src="js/world.js"></script>
+<script src="js/ui.js"></script>
+<script src="js/input.js"></script>
+<script src="js/main.js"></script>
+</body>
+</html>

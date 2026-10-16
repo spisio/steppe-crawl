@@ -2,7 +2,7 @@
 // Tiled renderer. Uses the public-domain Dungeon Crawl 32x32 tiles
 // (https://opengameart.org/content/dungeon-crawl-32x32-tiles) where they fit,
 // and the hand-drawn tiles in tiles-custom.js for Irad-specific things.
-// Loaded only by tiles.html; it replaces resize/render/viewOrigin from ui.js.
+// Loaded by index.html (the main, tiled game); it replaces resize/render/viewOrigin from ui.js.
 
 window.TILES = true;
 const TILE_ROOT = 'tiles/dcss/';

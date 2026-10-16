@@ -6,7 +6,7 @@ Ten valleys run out from the Qara-Chik road toward Manas Peak, each a day farthe
 
 ## Play
 
-Play in your browser in ASCII at **https://spisio.github.io/steppe-crawl/** or with graphical tiles at **https://spisio.github.io/steppe-crawl/tiles.html**, or open `index.html` / `tiles.html` locally. Both versions share the same saved game. There is no build step; fonts load from Google Fonts. Your game saves in the browser as you play.
+Play in your browser at **https://spisio.github.io/steppe-crawl/**, or open `index.html` locally. A classic ASCII version is at **https://spisio.github.io/steppe-crawl/ascii.html** (`ascii.html`); both versions share the same saved game, and each title screen links to the other. There is no build step; fonts load from Google Fonts. Your game saves in the browser as you play.
 
 ## What's in it
 
