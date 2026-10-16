@@ -314,19 +314,30 @@ function titleScreen() {
   G = null; stopRunSafe(); tgt = null; render();
   document.getElementById('side').innerHTML = ''; document.getElementById('log').innerHTML = '';
   const sv = loadSave(); let name = randomName(); let sp = null;
-  const head = `<div class="title">Steppe Crawl</div><p class="dim">A roguelike set in Irad.</p>
-  <p class="titlelinks"><a href="guide.html" target="_blank" rel="noopener">Game guide</a> · ${window.TILES ? '<a href="ascii.html">Play in ASCII</a>' : '<a href="index.html">Play with tiles</a>'} <span class="dim">(your saved game works in both)</span></p>
-  <p>Ten valleys run out from the Qara-Chik road toward Manas Peak, each a day farther from home. Clan tamgas lie in four wild regions off the road; three of them open the sealed cleft to the ruin of the First Church, where the <span class="star">Ene Malka</span>, the Mother Leaven of St. Janyl, waits with the bull-headed Herald of Morkhan. Bring the leaven home.</p>`;
+  // The night-steppe horizon behind the title: stars, a crescent moon, two ridges of hills.
+  const sky = `<svg class="sky" aria-hidden="true" viewBox="0 0 1280 300" preserveAspectRatio="xMidYMax slice">
+    <circle cx="1040" cy="78" r="34" fill="#f5efe0" opacity=".9"/><circle cx="1052" cy="70" r="30" fill="#100f17"/>
+    <g fill="#f5efe0" opacity=".55">${[[120, 40, 1.4], [260, 90, 1], [400, 30, 1.6], [560, 70, 1], [700, 24, 1.3], [860, 110, 1], [930, 40, 1.2], [1180, 130, 1.4], [1230, 40, 1], [40, 120, 1], [640, 130, 1.2], [330, 150, 1], [1110, 20, 1.1]].map(([x, y, r]) => `<circle cx="${x}" cy="${y}" r="${r}"/>`).join('')}</g>
+    <path d="M0 230 L120 170 L190 200 L300 120 L380 180 L470 150 L560 200 L660 110 L760 175 L850 140 L960 200 L1060 130 L1160 190 L1280 150 L1280 300 L0 300 Z" fill="#1d1a2a"/>
+    <path d="M660 110 L690 132 L676 134 L700 150 L640 140 Z" fill="#f5efe0" opacity=".18"/>
+    <path d="M0 260 C200 240 360 270 560 250 C760 232 980 268 1280 245 L1280 300 L0 300 Z" fill="#15131f"/></svg>`;
+  const head = `<header class="hhead"><div><h1 class="title">Steppe Crawl</h1><p class="hsub">A roguelike set in Irad.</p></div>
+  <nav class="hlinks" aria-label="Pages"><a href="guide.html" target="_blank" rel="noopener">Game guide</a>${window.TILES ? '<a href="ascii.html">Play in ASCII</a>' : '<a href="index.html">Play with tiles</a>'}<a href="scores.html" target="_blank" rel="noopener">All scores</a></nav></header>`;
   const step1 = () => {
     ui = { title: 'title' }; ov.hidden = false;
-    ov.innerHTML = `<div class="card wide">${head}
-    ${sv && !sv.over ? `<div class="opt" id="cont"><span class="k">*)</span><span>Continue ${esc(sv.p.name)} <small>${SPECIES[sv.p.sp].n} ${BACKGROUNDS[sv.p.bg].n}, level ${sv.p.xl}, ${esc(levelName.call(null, sv.cur))}</small></span></div>` : ''}
-    <div class="opt" id="howto"><span class="k">?)</span><span>How to play <small>Controls, the quest, peoples and callings, skills, magic, patrons and items</small></span></div>
-    <div class="row"><label for="nm">Name</label><input type="text" id="nm" value="${esc(name)}" maxlength="40" aria-describedby="nmerr"><button id="rn">Random name</button></div>
-    <p class="nameerr" id="nmerr" role="alert" hidden>That name isn't allowed. Please choose another, or use Random name.</p>
-    <h3>Choose your people</h3><div class="cols">${SPECIES_ORDER.map((k, i) => `<div class="opt" data-s="${k}"><span class="k">${letter(i)})</span><span>${SPECIES[k].n}<small>${esc(SPECIES[k].desc)}</small></span></div>`).join('')}</div></div>
-    <div class="card wide scorecard" id="scorebox"><div class="schead"><h2>The scoreboard</h2><a href="scores.html" target="_blank" rel="noopener">All scores and details</a></div><div id="sclists"><p class="dim">Loading scores…</p></div>
-    <label class="share"><input type="checkbox" id="share" ${shareScores() ? 'checked' : ''}> Post my finished games to the public scoreboard (name, people, calling, level, score and what killed me)</label></div>`;
+    const canCont = sv && !sv.over;
+    ov.innerHTML = `<div class="home">${sky}${head}<div class="hbody"><section class="hmain" aria-label="New game">
+    <p class="quest">Ten valleys run out from the Qara-Chik road toward Manas Peak, each a day farther from home. Clan tamgas lie in four wild regions off the road; three of them open the sealed cleft to the ruin of the First Church, where the <span class="star">Ene Malka</span>, the Mother Leaven of St. Janyl, waits with the bull-headed Herald of Morkhan. Bring the leaven home.</p>
+    <div class="hacts">${canCont ? `<button class="hbtn main" id="cont"><span>Continue ${esc(sv.p.name)}</span><small>${SPECIES[sv.p.sp].n} ${BACKGROUNDS[sv.p.bg].n}, level ${sv.p.xl}, ${esc(levelName.call(null, sv.cur))}</small><kbd>*</kbd></button>` : ''}
+    <button class="hbtn" id="howto"><span>How to play</span><small>Controls, peoples, magic, patrons</small><kbd>?</kbd></button></div>
+    <div class="hname"><label for="nm">${canCont ? 'Or start a new journey' : 'Start a new journey'}</label>
+    <div class="row"><input type="text" id="nm" value="${esc(name)}" maxlength="40" aria-describedby="nmerr" placeholder="Your name"><button id="rn">Random</button></div>
+    <p class="nameerr" id="nmerr" role="alert" hidden>That name isn't allowed. Please choose another, or use Random.</p></div>
+    <h2 class="hkick">Choose your people</h2><div class="pgrid">${SPECIES_ORDER.map((k, i) => `<button class="pcard" data-s="${k}"><span class="pn">${SPECIES[k].n}<kbd>${letter(i)}</kbd></span><small>${esc(SPECIES[k].desc)}</small></button>`).join('')}</div>
+    <p class="dim hnote">Your saved game works in both the tiles and ASCII versions.</p></section>
+    <aside class="scorecard" id="scorebox" aria-label="Scoreboard"><div class="schead"><h2>The scoreboard</h2></div><div id="sclists"><p class="dim">Loading scores…</p></div>
+    <a class="hall" href="scores.html" target="_blank" rel="noopener">All scores and details</a>
+    <label class="share"><input type="checkbox" id="share" ${shareScores() ? 'checked' : ''}> Post my finished games to the public scoreboard (name, people, calling, level, score and what killed me)</label></aside></div></div>`;
     const nm = document.getElementById('nm'), nmerr = document.getElementById('nmerr');
     // The name is checked as you type and again before you move on.
     const nameOk = () => { const bad = isOffensiveName(name); nmerr.hidden = !bad; nm.classList.toggle('bad', bad); return !bad; };
