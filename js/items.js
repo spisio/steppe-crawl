@@ -174,7 +174,7 @@ function addToPack(it, silent) {
     p.gold += q; if (!silent) msg(`You pick up ${q} silver coins.`, '#e8c050'); return true;
   }
   if (it.k === 'orb') { p.orb = true; msg('You lift the Ene Malka, the Mother Leaven, in its felt-wrapped pot. It is warm. Far below, something bellows. Now carry it home!', '#fff4c0'); return true; }
-  if (it.k === 'tamga') { p.tamgas.push(it.t); msg(`You pick up the ${TAMGAS[it.t].n}. (${p.tamgas.length} of 4 clan tamgas; three open the hidden track.)`, TAMGAS[it.t].c); return true; }
+  if (it.k === 'tamga') { p.tamgas.push(it.t); msg(`You pick up the ${TAMGAS[it.t].n}. (${p.tamgas.length} of 4 clan tamgas; three open the sealed cleft under Manas Peak.)`, TAMGAS[it.t].c); return true; }
   if (stackable(it)) {
     const s = inv.findIndex(x => x && x.k === it.k && x.t === it.t);
     if (s >= 0) { inv[s].qty += it.qty; if (!silent) msg(`${letter(s)} - ${itemName(inv[s])}`); return true; }

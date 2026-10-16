@@ -118,7 +118,7 @@ function renderSide() {
   <div class="kv"><div><span>AC</span> ${AC()}</div><div><span>Str</span> ${stat('str')}</div><div><span>XL</span> ${p.xl}</div>
   <div><span>EV</span> ${EV()}</div><div><span>Int</span> ${stat('int')}</div><div><span>Next</span> ${clamp(next, 0, 100)}%</div>
   <div><span>SH</span> ${SH()}</div><div><span>Dex</span> ${stat('dex')}</div><div><span>$</span> ${p.gold}</div></div>
-  <div><div class="place" style="color:${BRANCHES[L().br].c}">${levelName()}: ${esc(placeName())}</div><div class="sub">Turn ${Math.floor(G.turn)}${p.tamgas.length ? ' · Tamgas ' + p.tamgas.map(t => `<span style="color:${TAMGAS[t].c}">}</span>`).join('') : ''}</div></div>
+  <div><div class="place" style="color:${BRANCHES[L().br].c}">${levelName()}: ${esc(placeName())}</div><div class="sub">${daysFromHome()} day${daysFromHome() > 1 ? 's' : ''} from home · turn ${Math.floor(G.turn)}${p.tamgas.length ? ' · Tamgas ' + p.tamgas.map(t => `<span style="color:${TAMGAS[t].c}">}</span>`).join('') : ''}</div></div>
   <div class="eqblock"><div class="eqline">Wp: <em>${w ? esc(itemName(w)) : (SPc().claws ? 'claws' : 'bare hands')}</em></div>${qi !== null ? `<div class="eqline">Qv: <em>${esc(itemName(p.inv[qi]))}</em></div>` : ''}</div>
   ${sts.length ? `<div class="status">${sts.join('')}</div>` : ''}
   <div class="mons">${hs.length ? hs.map(m => `<div><span class="g" style="color:${T_(m).c}">${T_(m).g}</span><span style="color:${threatColor(m)}">${esc(T_(m).n)}</span> <span class="dim">(${m.state === 'sleep' ? 'asleep' : m.st.fear ? 'fleeing' : m.st.para ? 'paralysed' : healthDesc(m)})</span></div>`).join('') : '<div class="dim">No foes in sight.</div>'}${allies ? `<div class="dim">${allies} all${allies > 1 ? 'ies' : 'y'} with you</div>` : ''}</div>`;
@@ -287,7 +287,9 @@ function lookText(x, y) {
   let tn = TERRAIN_NAME[lev.t[i]];
   if (lev.t[i] === T.ALTAR) tn = `an altar to ${GODS[lev.altars[i]].n}`;
   if (lev.t[i] === T.SHOP) { const s = lev.shops.find(s => s.x === x && s.y === y); if (s) tn = s.name; }
-  if (lev.t[i] === T.BRANCH) { const e = lev.entries.find(e => e.x === x && e.y === y); tn = `a track into ${BRANCHES[e.to].n}`; }
+  if (lev.t[i] === T.BRANCH) { const e = lev.entries.find(e => e.x === x && e.y === y); tn = `${entryInfo(e.to).name}, leading into ${BRANCHES[e.to].n}`; }
+  if (lev.t[i] === T.DOWN) tn = onwardText(lev);
+  if (lev.t[i] === T.UP) tn = backInfo(lev).name;
   if (lev.t[i] === T.TREE) tn = art(curTheme().treeN || 'tree');
   parts.push(cap(tn) + '.');
   return parts.join(' ');
@@ -297,7 +299,7 @@ function helpScreen() {
 <div class="cols"><div>
 <h3>Moving</h3>Arrows, numpad, or <b class="gold">hjkl yubn</b>. Walk into a foe to attack.<br>
 <b class="gold">o</b> explore · <b class="gold">Tab</b> fight nearest · <b class="gold">5</b> rest · <b class="gold">s</b> wait<br>
-<b class="gold">&gt; &lt;</b> use a pass, or travel to one · <b class="gold">G</b> or <b class="gold">O</b> travel to a place you've been<br>
+<b class="gold">&gt;</b> go on, <b class="gold">&lt;</b> go back (or travel to the way) · <b class="gold">G</b> or <b class="gold">O</b> travel to a place you've been<br>
 <b class="gold">x</b> look around · <b class="gold">C</b> close a door<br>Click or tap the map to travel.
 <h3>Items</h3><b class="gold">i</b> pack · <b class="gold">g</b> pick up · <b class="gold">d</b> drop<br><b class="gold">w</b> wield · <b class="gold">W</b> wear · <b class="gold">T</b> take off · <b class="gold">P</b> put on · <b class="gold">R</b> remove<br>
 <b class="gold">q</b> quaff · <b class="gold">r</b> read · <b class="gold">v</b> evoke · <b class="gold">f</b> fire or throw · <b class="gold">Q</b> choose quiver
@@ -306,7 +308,7 @@ function helpScreen() {
 <h3>Your character</h3><b class="gold">m</b> skills · <b class="gold">%</b> character · <b class="gold">\\</b> discoveries · <b class="gold">Ctrl-P</b> messages
 <h3>Aiming</h3>Arrows move the cursor, <b class="gold">Tab</b> picks the next target, <b class="gold">Enter</b> or <b class="gold">.</b> fires, <b class="gold">Esc</b> cancels.
 </div></div>
-<h3>The quest</h3><p>Twelve valleys lead down from the Qara-Chik road. Four regions hide clan tamgas (<b class="gold">}</b>): the Arslanbob Woods, the Moiynkum Sands, the Old Kurgans and the Pass of the Black Blizzard. Carry three to the track under Manas Peak (Valley 10) to open the Hidden Valley of Janyl. Take the Ene Malka (<b style="color:#fff4c0">0</b>) from Morkhan's Herald and bring it back up the road from Valley 1.</p>
+<h3>The quest</h3><p>Ten valleys run out from the Qara-Chik road, each a day farther from home, joined by passes, fords and old tracks (<b class="gold">&gt;</b> goes on, <b class="gold">&lt;</b> goes back). Four regions off the road hide clan tamgas (<b class="gold">}</b>): the Arslanbob Woods, the Moiynkum Sands, the Old Kurgans and the Pass of the Black Blizzard. Carry three to the sealed cleft Under Manas Peak, ten days from home, to open the Hidden Valley of Janyl. Take the Ene Malka (<b style="color:#fff4c0">0</b>) from Morkhan's Herald and carry it all the way back to the Qara-Chik road.</p>
 <p class="dim">Like Crawl, you grow by training skills with experience (m), finding gear, and choosing a patron at an altar. Flasks, bark scrolls, shakeks and tumars are unknown until used. White is holy and black is Morkhan's. Your game saves in this browser.</p>` });
 }
 function commandsMenu() {
@@ -329,7 +331,7 @@ function titleScreen() {
   document.getElementById('side').innerHTML = ''; document.getElementById('log').innerHTML = '';
   const sv = loadSave(); let name = randomName(); let sp = null;
   const head = `<div class="title">Steppe Crawl</div><p class="dim">A roguelike set in Irad. ${window.TILES ? '<a href="index.html" style="color:var(--gold)">Play in ASCII</a>' : '<a href="tiles.html" style="color:var(--gold)">Play with tiles</a>'} · your saved game works in both.</p>
-  <p>Twelve valleys run down from the Qara-Chik road into the dark. Clan tamgas lie in four wild regions; three of them open the hidden track to the ruin of the First Church, where the <span class="star">Ene Malka</span>, the Mother Leaven of St. Janyl, waits with the bull-headed Herald of Morkhan. Bring the leaven home.</p>`;
+  <p>Ten valleys run out from the Qara-Chik road toward Manas Peak, each a day farther from home. Clan tamgas lie in four wild regions off the road; three of them open the sealed cleft to the ruin of the First Church, where the <span class="star">Ene Malka</span>, the Mother Leaven of St. Janyl, waits with the bull-headed Herald of Morkhan. Bring the leaven home.</p>`;
   const step1 = () => {
     ui = { title: 'title' }; ov.hidden = false;
     ov.innerHTML = `<div class="card wide">${head}

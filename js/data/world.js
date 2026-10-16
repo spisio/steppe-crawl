@@ -140,3 +140,20 @@ const NAMES_M = ['Bolot', 'Nurbek', 'Temir', 'Asan', 'Kubat', 'Erkin', 'Azamat',
 const NAMES_F = ['Aigerim', 'Cholpon', 'Jyldyz', 'Meerim', 'Saltanat', 'Nazgul', 'Maryam', 'Aruuke', 'Begimai', 'Kanykei', 'Elnura', 'Ainura', 'Klara', 'Gulnara'];
 const FATHERS = ['Asan', 'Tash', 'Bek', 'Moldo', 'Sultan', 'Kadyr', 'Joldosh', 'Ishak', 'Tabyl', 'Myrza', 'Ormon', 'Duishön'];
 function randomName() { const fm = Math.random() < .5; return (fm ? pick(NAMES_F) : pick(NAMES_M)) + ' ' + pick(FATHERS) + (fm ? ' kyzy' : ' uulu'); }
+
+// How the valleys connect. Each valley is a day farther from home; the way on is a pass,
+// ford, gorge path or caravan track, and each region opens from a landmark of its own.
+// [tile kind, name]
+const VALLEY_ONWARD = [null,
+  ['pass', 'the Kara-Oi ashuu'], ['ford', 'the Besh-Tash ford'], ['pass', 'the Kök-Bel ashuu'], ['gorge', 'the gorge path into Kara-Suu'],
+  ['ford', 'the Kara-Suu crossing'], ['pass', 'the Otmek ashuu'], ['track', 'the old caravan track'], ['track', 'the salt track across the Hunger Steppe'],
+  ['pass', 'the Manas ashuu'], null];
+const BRANCH_LINKS = {
+  temple: { entry: ['whiteyurts', 'a path up a green rise'] },
+  tunnels: { entry: ['adit', 'an old mine adit'], on: ['shaft', 'a shaft to the lower galleries'], back: ['ladder', 'a ladder back up'] },
+  woods: { entry: ['woodpath', 'a path in under the walnut trees'], on: ['woodpath', 'a path deeper into the woods'], back: ['trail', 'the path back'] },
+  sands: { entry: ['dryriver', 'a dry riverbed running out into the Moiynkum'], on: ['dryriver', 'the dry riverbed, farther into the dunes'], back: ['trail', 'your tracks back'] },
+  kurgan: { entry: ['mound', 'an opened kurgan'], on: ['mound', 'a passage into an older mound'], back: ['trail', 'the passage back'] },
+  blizzard: { entry: ['snowcairn', 'a cairn-marked trail into the snow'], on: ['snowcairn', 'the trail farther into the blizzard'], back: ['trail', 'the trail back'] },
+  hidden: { entry: ['cleft', 'a cleft in the rock under Manas Peak'], on: ['cleft', 'a cleft farther into the hidden valley'], back: ['trail', 'the way back'] },
+};

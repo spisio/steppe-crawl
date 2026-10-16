@@ -139,3 +139,94 @@ ctile('komuz', (P, E) => {
   E(12, 21, 7, 8, '#7a4a22'); E(12, 21, 5, 6, '#9a6232'); P(15, 3, 3, 15, '#6a3e1a'); P(14, 2, 5, 3, '#4a2a10');
   P(12, 6, 1, 18, '#e8d8a0'); P(14, 6, 1, 18, '#e8d8a0'); P(16, 6, 1, 18, '#e8d8a0'); E(12, 20, 2, 2, '#3a2010');
 });
+
+// --- the ways between valleys: passes, fords, tracks and trails ---
+const PATH = '#b89a6a', PATH_D = '#8f7450';
+function pathStrip(P, pts, w = 4) { for (const [x, y] of pts) P(x - (w >> 1), y, w, 2, PATH); }
+ctile('pass', (P) => {
+  // two snow-capped peaks with a low saddle between, and a path climbing into the saddle
+  for (let x = 0; x < 32; x++) {
+    const top = Math.round(Math.min(26, 4 + Math.abs(x - 7) * 1.7, 3 + Math.abs(x - 25) * 1.7));
+    const shade = x < 7 || (x > 16 && x < 25) ? '#6f6a62' : '#5f5a53';
+    P(x, top, 1, 31 - top, shade);
+    if (top < 11) P(x, top, 1, 3, '#f2f2f6');
+  }
+  pathStrip(P, [[16, 29], [15, 27], [14, 25], [15, 23], [17, 21], [16, 19]], 4);
+  P(15, 15, 3, 3, '#a19c90'); P(16, 12, 1, 3, '#ffffff'); P(17, 12, 3, 1, '#ffffff');
+});
+ctile('ford', (P) => {
+  P(0, 9, 32, 14, '#3f6fc8'); P(0, 9, 32, 2, '#6fa0e0'); P(0, 21, 32, 2, '#2f5aa8');
+  for (let x = 2; x < 32; x += 7) P(x, 14, 3, 1, '#a8c8f0');
+  for (const [x, y] of [[4, 12], [11, 15], [18, 12], [25, 15]]) { P(x, y, 5, 4, '#8f8a80'); P(x, y, 5, 1, '#b8b3a6'); }
+  pathStrip(P, [[16, 2], [16, 4], [16, 6], [16, 25], [16, 27], [16, 29]], 4);
+});
+ctile('gorge', (P) => {
+  P(0, 0, 11, 32, '#5b4a3e'); P(21, 0, 11, 32, '#4a3c32'); P(9, 0, 3, 32, '#7a6450'); P(20, 0, 2, 32, '#3a2e26');
+  for (let y = 2; y < 32; y += 6) { P(2, y, 6, 1, '#6e5b4c'); P(23, y + 3, 6, 1, '#5a4a3e'); }
+  pathStrip(P, [[16, 2], [15, 6], [16, 10], [17, 14], [16, 18], [15, 22], [16, 26], [16, 29]], 5);
+});
+ctile('track', (P) => {
+  for (let y = 0; y < 32; y += 2) { const off = Math.round(Math.sin(y / 6) * 3); P(10 + off, y, 2, 2, PATH_D); P(20 + off, y, 2, 2, PATH_D); }
+  P(25, 12, 4, 12, '#8f8a80'); P(25, 12, 4, 1, '#b8b3a6'); P(26, 15, 2, 1, '#5f5b54'); P(29, 13, 3, 1, '#ffffff'); P(29, 15, 2, 1, '#ffffff');
+});
+ctile('trail', (P, E) => {
+  pathStrip(P, [[16, 14], [15, 17], [14, 20], [15, 23], [17, 26], [16, 29]], 4);
+  E(16, 11, 5, 3, '#6d6a62'); E(16, 9, 4, 2, '#8a867c'); E(16, 7, 2, 2, '#a19c90');
+});
+ctile('road', (P) => {
+  // the Qara-Chik road home: wheel ruts and a signpost pointing back toward the checkpoint
+  for (let y = 0; y < 32; y += 2) { P(7, y, 2, 2, PATH_D); P(15, y, 2, 2, PATH_D); }
+  P(23, 8, 2, 23, '#6e4a2a'); P(22, 29, 4, 2, '#4a3018');
+  P(18, 7, 11, 6, '#9a6a3c'); P(18, 7, 11, 1, '#c08850'); P(16, 9, 2, 2, '#9a6a3c'); P(17, 8, 1, 4, '#9a6a3c');
+  for (let x = 20; x < 28; x += 2) P(x, 10, 1, 1, '#3a2614');
+  P(25, 14, 5, 1, '#ffffff'); P(25, 16, 4, 1, '#ffffff');
+});
+// --- region landmarks ---
+ctile('adit', (P) => {
+  P(0, 0, 32, 32, '#5f5246'); for (let y = 3; y < 32; y += 7) P(0, y, 32, 1, '#4f4438');
+  P(7, 6, 18, 26, '#0e0a08'); P(5, 5, 4, 27, '#7a5530'); P(23, 5, 4, 27, '#6a4826'); P(5, 4, 22, 4, '#8a6236');
+  P(14, 11, 4, 5, '#e8b040'); P(15, 12, 2, 3, '#fff0a0');
+});
+ctile('shaft', (P) => {
+  P(5, 6, 22, 20, '#7a5530'); P(8, 9, 16, 14, '#0e0a08'); P(12, 9, 2, 14, '#9a7040'); P(18, 9, 2, 14, '#9a7040');
+  for (let y = 11; y < 23; y += 3) P(12, y, 8, 1, '#9a7040');
+});
+ctile('ladder', (P) => {
+  P(0, 0, 32, 32, '#5f5246'); P(10, 0, 12, 4, '#e8d8a0');
+  P(11, 2, 2, 30, '#9a7040'); P(19, 2, 2, 30, '#9a7040'); for (let y = 5; y < 32; y += 4) P(11, y, 10, 2, '#b8844e');
+});
+ctile('mound', (P, E) => {
+  E(16, 22, 15, 9, '#6a7a3e'); E(16, 21, 13, 7, '#7e8e48'); E(13, 17, 6, 3, '#94a45a');
+  P(12, 20, 8, 10, '#a89a7a'); P(13, 21, 6, 9, '#0e0c0a'); P(12, 19, 8, 2, '#c8b898');
+});
+ctile('woodpath', (P, E) => {
+  E(16, 6, 15, 6, '#2e5e2a'); E(8, 8, 8, 5, '#43803a'); E(24, 8, 8, 5, '#3a7232');
+  P(5, 10, 5, 22, '#5b3d22'); P(22, 10, 5, 22, '#4f341c'); P(6, 10, 1, 22, '#6e4c2c');
+  pathStrip(P, [[16, 14], [15, 18], [16, 22], [17, 26], [16, 29]], 6);
+});
+ctile('dryriver', (P) => {
+  P(0, 8, 32, 16, '#d8c8a0'); P(0, 8, 32, 2, '#b8a478'); P(0, 22, 32, 2, '#b8a478');
+  for (const [x, y, w] of [[3, 12, 6], [8, 12, 1], [14, 16, 7], [20, 14, 1], [24, 18, 6], [5, 19, 5]]) P(x, y, w, 1, '#a08a60');
+  for (const [x, y] of [[11, 10], [27, 12], [18, 20], [2, 16], [22, 10]]) P(x, y, 2, 2, '#8f8a80');
+});
+ctile('snowcairn', (P, E) => {
+  E(16, 27, 14, 4, '#e8eef8'); E(16, 24, 9, 4, '#6d6a62'); E(16, 21, 7, 3, '#8a867c'); E(16, 18, 5, 2, '#a19c90');
+  P(12, 17, 9, 1, '#ffffff'); P(13, 20, 7, 1, '#ffffff'); P(15, 4, 2, 14, '#6e4a2a');
+  for (const [y, len] of [[5, 7], [8, 5], [11, 6]]) for (let i = 0; i < len; i++) P(17 + i, y + (i % 3 === 2 ? 1 : 0), 1, 2, '#ffffff');
+});
+function cleftTile(open) {
+  return (P) => {
+    P(0, 0, 32, 32, '#3e3848'); for (let y = 4; y < 32; y += 8) P(0, y, 32, 1, '#332e3c');
+    for (let y = 2; y < 32; y++) { const w = 2 + Math.round(4 * Math.sin((y / 32) * Math.PI)); P(16 - w + (y % 5 === 0 ? 1 : 0), y, w * 2, 1, open ? '#e8d8ff' : '#141018'); }
+    if (open) for (let y = 4; y < 30; y++) { const w = 1 + Math.round(2 * Math.sin((y / 32) * Math.PI)); P(16 - w, y, w * 2, 1, '#ffffff'); }
+    else for (const [x, y] of [[13, 10], [17, 15], [14, 21], [16, 26]]) P(x, y, 3, 3, '#5a5266');
+    for (const [x, y] of [[4, 8], [26, 12], [5, 22], [25, 24]]) { P(x, y, 3, 1, '#c070ff'); P(x + 1, y - 1, 1, 3, '#c070ff'); }
+  };
+}
+ctile('cleft', cleftTile(false));
+ctile('cleft_open', cleftTile(true));
+ctile('whiteyurts', (P, E) => {
+  pathStrip(P, [[16, 24], [16, 26], [16, 28], [16, 30]], 4);
+  E(16, 16, 12, 9, '#f2ece0'); P(4, 16, 25, 9, '#f2ece0'); P(4, 18, 25, 2, '#a3263a'); P(13, 6, 6, 3, '#e0d6c4');
+  P(13, 18, 6, 7, '#6e4a2a'); P(14, 19, 4, 6, '#3a2614'); P(4, 24, 25, 1, '#c8bca6');
+});

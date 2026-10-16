@@ -4,7 +4,26 @@
 let G = null;
 const L = () => G.levels[G.cur];
 const curTheme = () => themeFor(L().br, L().d);
-const levelName = (id = G.cur) => { const [br, d] = id.split(':'); return br === 'V' ? `Valley ${d}` : `${BRANCHES[br].short}:${d}`; };
+const levelName = (id = G.cur) => { const [br, d] = id.split(':'); return br === 'V' ? `Day ${d}` : `${BRANCHES[br].short} ${d}`; };
+// The journey: each valley is a day farther from the Qara-Chik road; regions add days to the valley they open from.
+function daysFromHome(id = G.cur) {
+  const [br, ds] = id.split(':'); const d = +ds;
+  if (br === 'V') return d;
+  return daysFromHome(`${BRANCHES[br].parent}:${G.entries[br]}`) + d;
+}
+function onwardInfo(lev) {
+  const o = lev.br === 'V' ? VALLEY_ONWARD[lev.d] : (BRANCH_LINKS[lev.br].on || null);
+  return o ? { kind: o[0], name: o[1], to: `${lev.br}:${lev.d + 1}` } : null;
+}
+function backInfo(lev) {
+  if (lev.br === 'V' && lev.d === 1) return { kind: 'road', name: 'the Qara-Chik road home' };
+  if (lev.br === 'V') return { kind: 'trail', name: `the trail back to ${VALLEY_THEMES[lev.d - 1].name}` };
+  if (lev.d === 1) { const par = `${BRANCHES[lev.br].parent}:${G.entries[lev.br]}`; return { kind: lev.br === 'tunnels' ? 'ladder' : 'trail', name: `the way back to ${placeName(par)}` }; }
+  const b = BRANCH_LINKS[lev.br].back; return { kind: b[0], name: b[1] };
+}
+// "the Kara-Oi ashuu, leading on to Besh-Tash Valley" / "a shaft to the lower galleries (Tunnels 2)"
+function onwardText(lev) { const o = onwardInfo(lev); return lev.br === 'V' ? `${o.name}, leading on to ${placeName(o.to)}` : `${o.name} (${levelName(o.to)})`; }
+function entryInfo(br) { const e = BRANCH_LINKS[br].entry; return { kind: e[0], name: e[1] }; }
 const placeName = (id = G.cur) => { const [br, d] = id.split(':'); return themeFor(br, +d).name; };
 
 function msg(t, c) {
@@ -41,8 +60,8 @@ function newGame(name, sp, bg) {
   p.hp = maxHP(); p.mp = maxMP();
   enterLevel('V:1', 'start');
   if (B.eagle) { const c = nearFree(L(), p.x, p.y, 2); if (c) spawnMonster(L(), 'goldeagle', c.x, c.y, { ally: 1, perm: 1, o: eagleStats() }); }
-  msg(`${p.name} the ${S.n} ${B.n} rides down from the Qara-Chik road.`, '#d8a640');
-  msg('Gather three clan tamgas, open the hidden track under Manas Peak, and bring the Ene Malka home. Press ? for help.', '#8a8499');
+  msg(`${p.name} the ${S.n} ${B.n} rides out from the Qara-Chik road.`, '#d8a640');
+  msg('Gather three clan tamgas, open the sealed cleft under Manas Peak, ten days from home, and bring the Ene Malka home. Press ? for help.', '#8a8499');
 }
 
 // --- levels and stairs ---
@@ -55,6 +74,7 @@ function levelParent(id) {
 function enterLevel(id, how, fromBranch) {
   const p = G.p;
   const followers = [];
+  const prevLev = G.cur ? L() : null;
   if (G.cur) {
     const prev = L();
     for (const m of prev.mons) {
@@ -73,12 +93,16 @@ function enterLevel(id, how, fromBranch) {
   const blocker = lev.mons.find(m => !m.dead && m.x === p.x && m.y === p.y);
   if (blocker) { const c = nearFree(lev, p.x, p.y, 3); if (c) { blocker.x = c.x; blocker.y = c.y; } }
   for (const m of followers) { const c = nearFree(lev, p.x, p.y, 2); if (c) { m.x = c.x; m.y = c.y; m.en = 0; lev.mons.push(m); } }
+  const days = daysFromHome(id), dayText = `${days} day${days > 1 ? 's' : ''} from home`;
+  const via = how === 'down' && prevLev ? onwardInfo(prevLev) : how === 'branch' ? entryInfo(lev.br) : null;
   if (!lev.visited) {
     lev.visited = true; p.visited.push(id);
-    msg(`${levelName(id)}: ${placeName(id)}.`, BRANCHES[lev.br].c);
+    const arrive = !via ? `${placeName(id)}.` : how === 'branch' ? `You follow ${via.name} into ${BRANCHES[lev.br].n}.`
+      : lev.br === 'V' ? `You take ${via.name} to ${placeName(id)}.` : `You take ${via.name} (${levelName(id)}).`;
+    msg(`${arrive} ${cap(dayText)}.`, BRANCHES[lev.br].c);
     msg(curTheme().intro, '#a9a3b8');
     if (p.orb) for (let k = 0; k < 3; k++) { const c = randomFloor(lev, 10); if (c) { const m = spawnGroup(lev, pickMonsterType(lev, 2), c.x, c.y); m.state = 'hunt'; m.tx = p.x; m.ty = p.y; } }
-  } else msg(`You return to ${placeName(id)} (${levelName(id)}).`, BRANCHES[lev.br].c);
+  } else msg(`You return to ${placeName(id)}, ${dayText}.`, BRANCHES[lev.br].c);
   for (const e of lev.entries) if (lev.seen[idx(e.x, e.y)]) G.seenEntries = true;
   updateFOV(); save();
 }
@@ -92,18 +116,18 @@ function takeStairs(dir) {
     if (t === T.DOWN) { enterLevel(`${lev.br}:${lev.d + 1}`, 'down'); return render(); }
     if (t === T.BRANCH) {
       const e = lev.entries.find(e => e.x === p.x && e.y === p.y);
-      if (e.to === 'hidden' && p.tamgas.length < BRANCHES.hidden.needs) return failMsg(`The track runs into bare rock. Three clan tamgas would open it; you carry ${p.tamgas.length}.`);
+      if (e.to === 'hidden' && p.tamgas.length < BRANCHES.hidden.needs) return failMsg(`The cleft is sealed with bare rock. Three clan tamgas would open it; you carry ${p.tamgas.length}.`);
       if (e.to === 'hidden' && !lev.hiddenOpened) { lev.hiddenOpened = 1; msg('You press the three tamgas to the rock. It opens like a felt door.', '#c070ff'); }
       enterLevel(`${e.to}:1`, 'branch'); return render();
     }
     const opts = [];
     if (lev.down && lev.seen[idx(lev.down.x, lev.down.y)]) opts.push(lev.down);
     for (const e of lev.entries) if (lev.seen[idx(e.x, e.y)]) opts.push(e);
-    if (!opts.length) return failMsg("You haven't found a way down here yet.");
+    if (!opts.length) return failMsg(lev.down || lev.entries.length ? "You haven't found the way on yet." : 'There is no way on from here.');
     opts.sort((a, b) => cheb(a, p) - cheb(b, p));
     return travelTo(opts[0]);
   }
-  if (t !== T.UP) { if (lev.seen[idx(lev.up.x, lev.up.y)]) return travelTo(lev.up); return failMsg("You haven't found the way up."); }
+  if (t !== T.UP) { if (lev.seen[idx(lev.up.x, lev.up.y)]) return travelTo(lev.up); return failMsg("You haven't found the way back."); }
   if (lev.br === 'V' && lev.d === 1) {
     if (p.orb) return win();
     return openMenu({ title: 'Ride home?', text: 'You have not found the Mother Leaven. If you ride home now, the game ends.', items: [
@@ -201,9 +225,9 @@ function afterMove() {
   if (rest.length === 1) msg(`You see here ${itemName(rest[0].it)}.`, '#a9a3b8');
   else if (rest.length > 1) msg(`There are ${rest.length} items here. (g to pick up)`, '#a9a3b8');
   const i = idx(p.x, p.y), t = lev.t[i];
-  if (t === T.DOWN) msg('A pass leads down into the next valley. (> to descend)', '#a9a3b8');
-  if (t === T.UP) msg(lev.br === 'V' && lev.d === 1 ? 'The Qara-Chik road leads home. (< to leave)' : 'A track climbs back up. (< to ascend)', '#a9a3b8');
-  if (t === T.BRANCH) { const e = lev.entries.find(e => e.x === p.x && e.y === p.y); msg(`A track leads into ${BRANCHES[e.to].n}. (> to enter)`, BRANCHES[e.to].c); }
+  if (t === T.DOWN) msg(`${cap(onwardText(lev))}. (> to go on)`, '#a9a3b8');
+  if (t === T.UP) { const b = backInfo(lev); msg(lev.br === 'V' && lev.d === 1 ? 'The Qara-Chik road leads home. (< to leave)' : `${cap(b.name)}. (< to go back)`, '#a9a3b8'); }
+  if (t === T.BRANCH) { const e = lev.entries.find(e => e.x === p.x && e.y === p.y); msg(`${cap(entryInfo(e.to).name)} leads into ${BRANCHES[e.to].n}. (> to enter)`, BRANCHES[e.to].c); }
   if (t === T.MAZAR) msg('A mazar: a cairn hung with white ribbons. (p to pray)', '#f5efe0');
   if (t === T.ALTAR) { const g = lev.altars[i]; msg(`An altar to ${GODS[g].n}, ${GODS[g].title}. (p to pray)`, GODS[g].c); }
   if (t === T.SHOP) { const s = lev.shops.find(s => s.x === p.x && s.y === p.y); if (s) msg(`${s.name}. (> to trade)`, '#e8c050'); }
@@ -319,7 +343,7 @@ function explore() {
       const x = c % W, y = (c - x) / W;
       return N8.some(([dx, dy]) => inb(x + dx, y + dy) && !lev.seen[idx(x + dx, y + dy)]);
     });
-    if (!st_) { msg(lev.down && lev.seen[idx(lev.down.x, lev.down.y)] ? 'Done exploring. (> travels to the way down)' : 'Done exploring.', '#a9a3b8'); return false; }
+    if (!st_) { msg(lev.down && lev.seen[idx(lev.down.x, lev.down.y)] ? 'Done exploring. (> travels to the way on)' : 'Done exploring.', '#a9a3b8'); return false; }
     return playerMove(st_.x, st_.y);
   });
 }

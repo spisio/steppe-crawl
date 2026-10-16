@@ -2,7 +2,7 @@
 
 A roguelike set in Irad, in the tradition of [Dungeon Crawl Stone Soup](https://github.com/crawl/crawl).
 
-Twelve valleys run down from the Qara-Chik road into the dark. Clan tamgas lie in four wild regions; three of them open the hidden track to the ruin of the First Church, where the **Ene Malka**, the Mother Leaven of St. Janyl, waits with the bull-headed Herald of Morkhan. Bring the leaven home.
+Ten valleys run out from the Qara-Chik road toward Manas Peak, each a day farther from home, joined by passes, fords and old caravan tracks. Clan tamgas lie in four wild regions off the road; three of them open the sealed cleft to the ruin of the First Church, where the **Ene Malka**, the Mother Leaven of St. Janyl, waits with the bull-headed Herald of Morkhan. Bring the leaven home.
 
 ## Play
 
@@ -17,7 +17,7 @@ Modelled on Crawl's systems, re-themed for Irad:
 - **28 skills** trained by experience, with manual or automatic training and focus, as in Crawl. Weapon skill speeds up attacks down to a minimum delay.
 - **37 spells** in 10 schools, a spell library filled by books, memorisation by spell levels, and failure rates using the same inputs as Crawl's formula.
 - **6 patrons** with piety, conduct, wrath and invoked abilities: St. Janyl, Kambar-Ata, Umay, Kök Tengri, Morkhan, and Kydyr-Ata (who deals in silver).
-- **29 floors in 8 regions**: the Valleys, the White Yurts (every altar), the Smugglers' Tunnels, the Arslanbob Woods, the Moiynkum Sands, the Old Kurgans, the Pass of the Black Blizzard, and the Hidden Valley of Janyl. Each region has its own map generator, monsters and boss.
+- **A ten-day journey plus seven regions (29 areas)**: the Valleys, the White Yurts (every altar), the Smugglers' Tunnels, the Arslanbob Woods, the Moiynkum Sands, the Old Kurgans, the Pass of the Black Blizzard, and the Hidden Valley of Janyl. Each region has its own map generator, monsters and boss.
 - **About 60 creatures** with spells, packs and bands, resistances and sleeping, wandering and hunting behaviour, including uniques such as Tökö the Marmot King, Mystan Kempir and Jelmoguz the Seven-Headed.
 - **Item identification** (flasks, bark scrolls, shakeks, tumars), weapon brands, armour egos, wands, magic staves, evocables that recharge with experience, eight artefacts, shops, traps, doors, clouds, mutations and corpses for necromancy.
 - **Crawl conveniences**: auto-explore, auto-fight, rest, travel between levels, a targeting cursor, look mode, a monster threat list, and a character file when the game ends.
@@ -28,7 +28,7 @@ Modelled on Crawl's systems, re-themed for Irad:
 | --- | --- |
 | arrows, numpad, `hjklyubn` | move; walk into a foe to attack |
 | `o` / `Tab` / `5` / `s` | explore / fight nearest / rest / wait |
-| `>` `<` | use a pass, or travel to one |
+| `>` `<` | go on or go back (a pass, ford, track or trail), or travel to the way |
 | `G` or `O` | travel to a place you've been |
 | `x` | look around |
 | `i` `g` `d` | pack, pick up, drop |

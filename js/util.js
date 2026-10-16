@@ -42,7 +42,7 @@ const diggable = t => t === T.WALL || t === T.TREE || t === T.FELT || t === T.ST
 
 const TERRAIN_NAME = {
   [T.FLOOR]: 'open ground', [T.WALL]: 'rock', [T.TREE]: 'a tree', [T.DEEP]: 'deep water', [T.SHALLOW]: 'shallow water',
-  [T.DOWN]: 'a pass leading down', [T.UP]: 'a track leading up', [T.MAZAR]: 'a mazar hung with white ribbons',
+  [T.DOWN]: 'the way on', [T.UP]: 'the way back', [T.MAZAR]: 'a mazar hung with white ribbons',
   [T.USED]: 'a quiet mazar', [T.FELT]: 'a felt yurt wall', [T.DOORC]: 'a closed felt door', [T.DOORO]: 'an open felt door',
   [T.STONE]: 'a dressed stone wall', [T.ALTAR]: 'an altar', [T.SHOP]: 'a trader', [T.BRANCH]: 'a track into another region',
   [T.STATUE]: 'a balbal, an old stone figure',

@@ -6,7 +6,7 @@
 
 window.TILES = true;
 const TILE_ROOT = 'tiles/dcss/';
-const DF = 'dungeon/floor/', DW = 'dungeon/wall/', DG = 'dungeon/gateways/';
+const DF = 'dungeon/floor/', DW = 'dungeon/wall/';
 
 // --- terrain sets per place ---
 const rep = (a, n) => Array(n).fill(a).flat();
@@ -38,7 +38,6 @@ function setFor(lev) {
 const TREE_KIND = { juniper: 'juniper', poplar: 'poplar', spruce: 'spruce', 'walnut tree': 'walnut', tamarisk: 'tamarisk', saxaul: 'saxaul', 'dwarf juniper': 'juniper',
   'frozen juniper': 'frozen', 'withered juniper': 'dead', 'dead tree': 'dead', 'root-tangle': 'root' };
 const WATER = { deep: ['dungeon/water/deep_water', 'dungeon/water/deep_water_2'], shallow: ['dungeon/water/shallow_water', 'dungeon/water/shallow_water_2'] };
-const BRANCH_GATE = { temple: DG + 'enter', tunnels: DG + 'enter_orc', woods: DG + 'enter_lair', sands: DG + 'enter_snake', kurgan: DG + 'enter_tomb', blizzard: DG + 'enter_cocytus', hidden: DG + 'enter_zot_closed_new' };
 const ALTAR_TILE = { janyl: 'dungeon/altars/altar_shining_one', kambar: 'dungeon/altars/altar_okawaru', umay: 'dungeon/altars/altar_elyvilon',
   tengri: 'dungeon/altars/qazlal_0', morkhan: 'dungeon/altars/altar_makhleb_flame_1', kydyr: 'dungeon/altars/gozag_0' };
 const SHOP_TILE = { general: 'dungeon/shops/shop_general', smith: 'dungeon/shops/shop_weapon', saddler: 'dungeon/shops/shop_armor', tabyp: 'dungeon/shops/shop_potions', books: 'dungeon/shops/shop_scrolls', zerger: 'dungeon/shops/shop_jewellery' };
@@ -112,8 +111,7 @@ function allTilePaths() {
   const s = new Set();
   for (const k in SETS) for (const part of ['floor', 'wall', 'stone']) (SETS[k][part] || []).forEach(p => s.add(p));
   STONE_DEFAULT.forEach(p => s.add(p)); WATER.deep.forEach(p => s.add(p)); WATER.shallow.forEach(p => s.add(p));
-  [DG + 'stone_stairs_down', DG + 'stone_stairs_up', DG + 'exit', DG + 'enter_zot_open_new'].forEach(p => s.add(p));
-  for (const o of [BRANCH_GATE, ALTAR_TILE, SHOP_TILE, TRAP_TILE, CLOUD_TILE, WEAPON_ITEM]) Object.values(o).forEach(p => s.add(p));
+  for (const o of [ALTAR_TILE, SHOP_TILE, TRAP_TILE, CLOUD_TILE, WEAPON_ITEM]) Object.values(o).forEach(p => s.add(p));
   for (const v of Object.values(MON_TILE)) { const p = Array.isArray(v) ? v[0] : v; if (!p.startsWith('custom:')) s.add(p); }
   s.add(RISEN_SMALL); s.add(RISEN_LARGE);
   Object.values(STAFF_ITEM).forEach(p => s.add(I_ + 'staff/' + p));
@@ -171,10 +169,10 @@ function terrainSpecs(lev, x, y) {
     case T.DEEP: return [pickV(WATER.deep, x, y, seed)];
     case T.SHALLOW: return [pickV(WATER.shallow, x, y, seed)];
     case T.TREE: return [floor, 'custom:tree_' + (TREE_KIND[curTheme().treeN] || 'juniper')];
-    case T.DOWN: return [floor, DG + 'stone_stairs_down'];
-    case T.UP: return [floor, lev.br === 'V' && lev.d === 1 ? DG + 'exit' : DG + 'stone_stairs_up'];
+    case T.DOWN: return [floor, 'custom:' + onwardInfo(lev).kind];
+    case T.UP: return [floor, 'custom:' + backInfo(lev).kind];
     case T.BRANCH: { const e = lev.entries.find(e => idx(e.x, e.y) === i); const to = e ? e.to : 'temple';
-      return [floor, to === 'hidden' && G.p.tamgas.length >= 3 ? DG + 'enter_zot_open_new' : BRANCH_GATE[to]]; }
+      return [floor, 'custom:' + (to === 'hidden' && G.p.tamgas.length >= 3 ? 'cleft_open' : entryInfo(to).kind)]; }
     case T.MAZAR: return [floor, 'custom:mazar'];
     case T.USED: return [floor, 'custom:mazar_used'];
     case T.ALTAR: return [floor, ALTAR_TILE[lev.altars[i]] || 'dungeon/altars/altar_base'];
