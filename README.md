@@ -6,9 +6,9 @@ Ten valleys run out from the Qara-Chik road toward Manas Peak, each a day farthe
 
 ## Play
 
-Play in your browser at **https://spisio.github.io/steppe-crawl/**, or open `index.html` locally. A classic ASCII version is at **https://spisio.github.io/steppe-crawl/ascii.html** (`ascii.html`); both versions share the same saved game, and each title screen links to the other.
+Play in your browser at **https://steppecrawl.online/**, or open `index.html` locally. A classic ASCII version is at **https://steppecrawl.online/ascii.html** (`ascii.html`); both versions share the same saved game, and each title screen links to the other.
 
-New to the game? Read the **[instructions and game guide](https://spisio.github.io/steppe-crawl/guide.html)** (`guide.html`), or press `?` in the game. There is no build step; fonts load from Google Fonts. Your game saves in the browser as you play.
+New to the game? Read the **[instructions and game guide](https://steppecrawl.online/guide.html)** (`guide.html`), or press `?` in the game. There is no build step; fonts load from Google Fonts. Your game saves in the browser as you play.
 
 ## What's in it
 
@@ -53,7 +53,7 @@ The tiles version uses the public-domain (CC0) [Dungeon Crawl 32x32 tiles](https
 
 ## Public scoreboard
 
-The start page shows the **Top 10 scores** and the **10 most recent deaths**, and [`scores.html`](https://spisio.github.io/steppe-crawl/scores.html) shows them in detail. Finished games are posted automatically under the character's name; players can turn this off with the tick box on the start page. Until a database is connected, the lists show the games played in that browser.
+The start page shows the **Top 10 scores** and the **10 most recent deaths**, and [`scores.html`](https://steppecrawl.online/scores.html) shows them in detail. Finished games are posted automatically under the character's name; players can turn this off with the tick box on the start page. Until a database is connected, the lists show the games played in that browser.
 
 To make the scoreboard shared by everyone (on GitHub Pages and on itch.io):
 
