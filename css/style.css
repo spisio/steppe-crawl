@@ -95,3 +95,5 @@ textarea { width: 100%; margin-top: 8px; font: 12px/1.35 var(--mono); background
 .gtable td { border-bottom: 1px solid #221f2e; padding: 5px 8px 5px 0; vertical-align: top; }
 .gtable td small { display: block; }
 .guide a, .gpage a { color: var(--gold); }
+.titlelinks { margin: .2em 0 .6em; }
+.titlelinks a { color: var(--gold); font-weight: 600; }

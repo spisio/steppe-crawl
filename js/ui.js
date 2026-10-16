@@ -314,7 +314,8 @@ function titleScreen() {
   G = null; stopRunSafe(); tgt = null; render();
   document.getElementById('side').innerHTML = ''; document.getElementById('log').innerHTML = '';
   const sv = loadSave(); let name = randomName(); let sp = null;
-  const head = `<div class="title">Steppe Crawl</div><p class="dim">A roguelike set in Irad. ${window.TILES ? '<a href="ascii.html" style="color:var(--gold)">Play in ASCII</a>' : '<a href="index.html" style="color:var(--gold)">Play with tiles</a>'} · your saved game works in both.</p>
+  const head = `<div class="title">Steppe Crawl</div><p class="dim">A roguelike set in Irad.</p>
+  <p class="titlelinks"><a href="guide.html" target="_blank" rel="noopener">Game guide</a> · ${window.TILES ? '<a href="ascii.html">Play in ASCII</a>' : '<a href="index.html">Play with tiles</a>'} <span class="dim">(your saved game works in both)</span></p>
   <p>Ten valleys run out from the Qara-Chik road toward Manas Peak, each a day farther from home. Clan tamgas lie in four wild regions off the road; three of them open the sealed cleft to the ruin of the First Church, where the <span class="star">Ene Malka</span>, the Mother Leaven of St. Janyl, waits with the bull-headed Herald of Morkhan. Bring the leaven home.</p>`;
   const step1 = () => {
     ui = { title: 'title' }; ov.hidden = false;
