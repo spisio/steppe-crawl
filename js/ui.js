@@ -303,9 +303,22 @@ function commandsMenu() {
 
 // --- the end screen ---
 function showEnd(title, text) {
-  const dump = morgue();
-  openMenu({ title, locked: true, text: `${text}<br><span class="gold">Score: ${score()}</span><textarea id="dump" readonly rows="12">${esc(dump)}</textarea>`,
-    items: [{ key: 'c', label: 'Copy character file', act: () => { const t = document.getElementById('dump'); try { navigator.clipboard.writeText(dump).then(() => msg('Copied.'), () => { t.select(); }); } catch (e) { t.select(); } } },
+  const dump = morgue(), post = shareText(), full = `${post} ${GAME_URL}`;
+  const note = t => { const el = document.getElementById('sharenote'); if (el) el.textContent = t; };
+  const copy = (txt, done, fallbackId) => {
+    const sel = () => { const el = document.getElementById(fallbackId); if (el) { el.focus(); el.select(); } note('Select the text and copy it.'); };
+    try { navigator.clipboard.writeText(txt).then(() => note(done), sel); } catch (e) { sel(); }
+  };
+  // Phones get the system share sheet; elsewhere the post and link are copied.
+  const share = () => {
+    if (navigator.share) navigator.share({ title: 'Steppe Crawl', text: post, url: GAME_URL }).then(() => note('Shared.'), e => { if (e && e.name !== 'AbortError') copy(full, 'Copied the post and link. Paste it anywhere.', 'sharebox'); });
+    else copy(full, 'Copied the post and link. Paste it anywhere.', 'sharebox');
+  };
+  openMenu({ title, locked: true, text: `${text}<br><span class="gold">Score: ${score()}</span>
+    <div class="sharecard"><h3>Share your ${G.won ? 'victory' : 'fate'}</h3><textarea id="sharebox" class="sharebox" readonly rows="4" aria-label="Post to share">${esc(full)}</textarea><p class="sharenote" id="sharenote" role="status"></p></div>
+    <textarea id="dump" readonly rows="12" aria-label="Character file">${esc(dump)}</textarea>`,
+    items: [{ key: 's', label: navigator.share ? 'Share your story' : 'Copy post and link', sub: 'A short post about this run, with a link to the game', act: share },
+      { key: 'c', label: 'Copy character file', act: () => copy(dump, 'Copied the character file.', 'dump') },
       { key: 'Enter', label: 'Start a new game', act: titleScreen }], wide: true });
 }
 
@@ -324,9 +337,11 @@ function titleScreen() {
     <p class="quest">Ten valleys run out from the Qara-Chik road toward Manas Peak, each a day farther from home. Clan tamgas lie in four wild regions off the road; three of them open the sealed cleft to the ruin of the First Church, where the <span class="star">Ene Malka</span>, the Mother Leaven of St. Janyl, waits with the bull-headed Herald of Morkhan. Bring the leaven home.</p>
     <div class="hacts">${canCont ? `<button class="hbtn main" id="cont"><span>Continue ${esc(sv.p.name)}</span><small>${SPECIES[sv.p.sp].n} ${BACKGROUNDS[sv.p.bg].n}, level ${sv.p.xl}, ${esc(levelName.call(null, sv.cur))}</small><kbd>*</kbd></button>` : ''}
     <button class="hbtn" id="howto"><span>How to play</span><small>Controls, peoples, magic, patrons</small><kbd>?</kbd></button></div>
-    <div class="hname"><label for="nm">${canCont ? 'Or start a new journey' : 'Start a new journey'}</label>
-    <div class="row"><input type="text" id="nm" value="${esc(name)}" maxlength="40" aria-describedby="nmerr" placeholder="Your name"><button id="rn">Random</button></div>
-    <p class="nameerr" id="nmerr" role="alert" hidden>That name isn't allowed. Please choose another, or use Random.</p></div>
+    <div class="hname"><h2 class="hjour">${canCont ? 'Or start a new journey' : 'Start a new journey'}</h2>
+    <label for="nm" class="nmlabel">Your name</label>
+    <div class="row"><span class="nmwrap"><svg aria-hidden="true" viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 20h9"/><path d="M16.5 3.5a2.1 2.1 0 0 1 3 3L7 19l-4 1 1-4Z"/></svg><input type="text" id="nm" value="${esc(name)}" maxlength="40" aria-describedby="nmhint nmerr" placeholder="Type your name" autocomplete="off" spellcheck="false"></span><button id="rn"><svg aria-hidden="true" viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="3"/><circle cx="8" cy="8" r="1.3" fill="currentColor"/><circle cx="12" cy="12" r="1.3" fill="currentColor"/><circle cx="16" cy="16" r="1.3" fill="currentColor"/></svg>Random name</button></div>
+    <p class="nmhint" id="nmhint">Type your own name, or roll a random Irad one. It appears on the scoreboard.</p>
+    <p class="nameerr" id="nmerr" role="alert" hidden>That name isn't allowed. Please choose another, or use Random name.</p></div>
     <h2 class="hkick">Choose your people</h2><div class="pgrid">${SPECIES_ORDER.map((k, i) => `<button class="pcard" data-s="${k}"><span class="pn">${SPECIES[k].n}<kbd>${letter(i)}</kbd></span><small>${esc(SPECIES[k].desc)}</small></button>`).join('')}</div>
     <p class="dim hnote">Your saved game works in both the tiles and ASCII versions.</p></section>
     <aside class="scorecard" id="scorebox" aria-label="Scoreboard"><div class="schead"><h2>The scoreboard</h2></div><div id="sclists"><p class="dim">Loading scores…</p></div>
@@ -336,6 +351,8 @@ function titleScreen() {
     // The name is checked as you type and again before you move on.
     const nameOk = () => { const bad = isOffensiveName(name); nmerr.hidden = !bad; nm.classList.toggle('bad', bad); return !bad; };
     nm.oninput = () => { name = nm.value; nameOk(); };
+    // Selecting the suggested name on first click lets you simply type over it.
+    let picked = false; nm.onfocus = () => { if (!picked) { picked = true; nm.select(); } };
     document.getElementById('rn').onclick = () => { name = randomName(); nm.value = name; nameOk(); };
     const pickPeople = k => { if (!nameOk()) { nm.focus(); return; } sp = k; step2(); };
     ov.querySelectorAll('[data-s]').forEach(el => el.onclick = () => pickPeople(el.dataset.s));

@@ -136,10 +136,15 @@ input[type=text].bad { border-color: #e55a5a; }
 .home kbd { font: 600 11px var(--mono); padding: 1px 6px; border: 1px solid currentColor; border-radius: 4px; opacity: .7; }
 .hbtn kbd { position: absolute; right: 12px; top: 50%; transform: translateY(-50%); }
 .hname { display: flex; flex-direction: column; gap: 6px; max-width: 520px; }
-.hname label { font: 700 20px var(--disp); color: var(--milk); }
+.hname .hjour { margin: 0 0 4px; font: 700 20px var(--disp); color: var(--milk); }
+.hname .nmlabel { font: 600 12px var(--mono); letter-spacing: 2px; text-transform: uppercase; color: var(--gold); }
 .hname .row { margin: 0; flex-wrap: nowrap; }
-.hname input[type=text] { flex: 1; width: auto; min-height: 44px; padding: 0 14px; border-color: #3a3550; border-radius: 6px; background: var(--panel); color: var(--milk); }
-.hname button { min-height: 44px; padding: 0 16px; border: 1px solid #3a3550; border-radius: 6px; background: var(--panel); color: var(--gold); font: inherit; cursor: pointer; }
+.nmwrap { flex: 1; min-width: 0; position: relative; display: flex; align-items: center; }
+.nmwrap svg { position: absolute; left: 14px; color: var(--gold); pointer-events: none; }
+.hname input[type=text] { flex: 1; width: auto; min-width: 0; min-height: 44px; padding: 0 14px 0 40px; border-color: #5a5274; border-radius: 6px; background: var(--panel); color: var(--milk); }
+.hname input[type=text]:hover { border-color: var(--gold); }
+.nmhint { margin: 0; font-size: 12px; color: #a9a0bb; }
+.hname button { display: inline-flex; align-items: center; gap: 8px; white-space: nowrap; min-height: 44px; padding: 0 16px; border: 1px solid #3a3550; border-radius: 6px; background: var(--panel); color: var(--gold); font: inherit; cursor: pointer; }
 .hname .nameerr { margin: 0; }
 .hkick { margin: 4px 0 -8px; font: 600 12px var(--mono); letter-spacing: 2px; text-transform: uppercase; color: #9d94b0; }
 .pgrid { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 10px; }
@@ -208,3 +213,9 @@ body.page > .sky { position: absolute; left: 0; top: 0; width: 100%; height: 300
   .gtoc a { border: 1px solid var(--line); }
   .pcard2 { padding: 18px 16px; }
 }
+
+/* share box on the death and victory screens */
+.sharecard { margin-top: 12px; padding: 12px 14px; border: 1px solid #5a4a24; border-radius: 8px; background: #1c1a14; }
+.sharecard h3 { margin: 0 0 6px; color: var(--gold); }
+.sharebox { margin-top: 0; font-size: 13px; color: var(--milk); background: transparent; border: 0; padding: 0; resize: none; }
+.sharenote { margin: 4px 0 0; min-height: 1em; font-size: 12px; color: #7cdc8c; }

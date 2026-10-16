@@ -422,6 +422,15 @@ function win() {
   G.won = true; G.over = true; G.cause = 'brought the Ene Malka home'; stopRun(); clearSave(); recordGame(); render();
   showEnd('The Mother Leaven comes home', `${esc(G.p.name)} rides up the Qara-Chik road with the Ene Malka wrapped in white felt. In every valley behind, the herders will bake with it again, and the bards will add a verse.`);
 }
+// A short post about how the run ended, for sharing.
+function shareText() {
+  const p = G.p, who = `${cleanName(p.name)} the ${SPc().n} ${BGc().n}, level ${p.xl},`;
+  const tam = p.tamgas.length ? ` with ${p.tamgas.length} clan tamga${p.tamgas.length > 1 ? 's' : ''}` : '';
+  const how = G.won ? `brought the Ene Malka home${tam}!`
+    : G.cause === 'rode home empty-handed' ? `rode home empty-handed from ${placeName()}, ${daysText()}.`
+    : `was ${G.cause} in ${placeName()}, ${daysText()}.`;
+  return `${who} ${how} Score: ${score().toLocaleString('en-US')}.\nSteppe Crawl, a roguelike set in Irad:`;
+}
 function morgue() {
   const p = G.p, S = SPc(), B = BGc();
   const lines = [];
