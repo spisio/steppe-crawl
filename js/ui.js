@@ -323,12 +323,18 @@ function titleScreen() {
     ${sv && !sv.over ? `<div class="opt" id="cont"><span class="k">*)</span><span>Continue ${esc(sv.p.name)} <small>${SPECIES[sv.p.sp].n} ${BACKGROUNDS[sv.p.bg].n}, level ${sv.p.xl}, ${esc(levelName.call(null, sv.cur))}</small></span></div>` : ''}
     <div class="opt" id="howto"><span class="k">?)</span><span>How to play <small>Controls, the quest, peoples and callings, skills, magic, patrons and items</small></span></div>
     <div class="row"><label for="nm">Name</label><input type="text" id="nm" value="${esc(name)}" maxlength="40"><button id="rn">Random name</button></div>
-    <h3>Choose your people</h3><div class="cols">${SPECIES_ORDER.map((k, i) => `<div class="opt" data-s="${k}"><span class="k">${letter(i)})</span><span>${SPECIES[k].n}<small>${esc(SPECIES[k].desc)}</small></span></div>`).join('')}</div></div>`;
+    <h3>Choose your people</h3><div class="cols">${SPECIES_ORDER.map((k, i) => `<div class="opt" data-s="${k}"><span class="k">${letter(i)})</span><span>${SPECIES[k].n}<small>${esc(SPECIES[k].desc)}</small></span></div>`).join('')}</div></div>
+    <div class="card wide scorecard" id="scorebox"><div class="schead"><h2>The scoreboard</h2><a href="scores.html" target="_blank" rel="noopener">All scores and details</a></div><div id="sclists"><p class="dim">Loading scores…</p></div>
+    <label class="share"><input type="checkbox" id="share" ${shareScores() ? 'checked' : ''}> Post my finished games to the public scoreboard (name, people, calling, level, score and what killed me)</label></div>`;
     const nm = document.getElementById('nm'); nm.oninput = () => name = nm.value;
     document.getElementById('rn').onclick = () => { name = randomName(); nm.value = name; };
     ov.querySelectorAll('[data-s]').forEach(el => el.onclick = () => { sp = el.dataset.s; step2(); });
     const c = document.getElementById('cont'); if (c) c.onclick = cont;
     document.getElementById('howto').onclick = () => guideMenu();
+    const shareBox = document.getElementById('share'); shareBox.onchange = () => setShareScores(shareBox.checked);
+    if (!SCORES_ONLINE) shareBox.closest('label').hidden = true;
+    fetchScores(10).then(d => { const el = document.getElementById('sclists'); if (!el) return;
+      el.innerHTML = scoreListsHTML(d) + (d.online ? '' : `<p class="dim">${SCORES_ONLINE ? 'The public scoreboard can\'t be reached right now, so these are' : 'These are'} the games played in this browser.</p>`); });
     ui.key = k => {
       if (document.activeElement === nm && k !== 'Enter') return false;
       if (k === '*' && sv && !sv.over) { cont(); return true; }

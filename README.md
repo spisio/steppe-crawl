@@ -50,3 +50,16 @@ Plain JavaScript, no dependencies. Data tables live in `js/data/` (species, skil
 ## Tiles
 
 The tiles version uses the public-domain (CC0) [Dungeon Crawl 32x32 tiles](https://opengameart.org/content/dungeon-crawl-32x32-tiles) from Dungeon Crawl Stone Soup, made by many artists; see `tiles/dcss/LICENSE.txt`. Only the tiles the game uses are included. Things the set has no tile for (yurts and felt doors, mazars, balbals, steppe trees, horses and the tulpar, golden eagles, the kumai, big cats, clan tamgas, the komuz and the Ene Malka) are drawn in code in `js/tiles-custom.js`. The tile mapping and renderer are in `js/tiles.js`.
+
+## Public scoreboard
+
+The start page shows the **Top 10 scores** and the **10 most recent deaths**, and [`scores.html`](https://spisio.github.io/steppe-crawl/scores.html) shows them in detail. Finished games are posted automatically under the character's name; players can turn this off with the tick box on the start page. Until a database is connected, the lists show the games played in that browser.
+
+To make the scoreboard shared by everyone (on GitHub Pages and on itch.io):
+
+1. Create a free project at [supabase.com](https://supabase.com).
+2. In the project, open **SQL Editor**, paste the contents of [`supabase/scores.sql`](supabase/scores.sql), and run it. It creates the `games` table and lets the public key read scores and add new ones, but not change or delete them.
+3. Open **Project Settings > API** and copy the **Project URL** and the **anon / publishable** key.
+4. Put them in [`js/config.js`](js/config.js) and publish.
+
+The public key is meant to be visible in the page. Scores are checked for sensible values, names are length-limited and filtered, and you can delete any spam yourself in Supabase's **Table Editor**. As with any browser game, a determined player could still post a fake score.

@@ -22,7 +22,7 @@ const GUIDE = [
 <li>When the valley is explored, press ${K('&gt;')} to travel to the way on, and ${K('&gt;')} again to take it.</li>
 </ol>
 <h3>Death is permanent</h3>
-<p>As in Crawl, when you die the game is over and your save is deleted. You get a character file summarising your journey. The game saves automatically in your browser as you play, so you can close the tab and continue later from the title screen.</p>
+<p>As in Crawl, when you die the game is over and your save is deleted. You get a character file summarising your journey. Finished games also appear on the scoreboard on the start page (you can turn this off there). The game saves automatically in your browser as you play, so you can close the tab and continue later from the title screen.</p>
 <h3>Two ways to play</h3>
 <p>The main game uses graphical tiles. A classic ASCII version (<a href="ascii.html">ascii.html</a>) plays exactly the same and shares your saved game.</p>` },
 

@@ -1,0 +1,60 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Steppe Crawl Scores</title>
+<meta name="description" content="Top scores and recent deaths in Steppe Crawl, a roguelike set in Irad.">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;600;700&family=Spectral+SC:wght@500;700&display=swap">
+<link rel="stylesheet" href="css/style.css">
+<style>
+  html, body { height: auto; }
+  body { overflow: auto; }
+  .gpage { max-width: 1100px; margin: 0 auto; padding-inline: 16px; padding-block: 24px 64px; }
+  .gpage header { display: flex; flex-wrap: wrap; align-items: baseline; justify-content: space-between; gap: 8px 24px; border-bottom: 1px solid var(--line); padding-bottom: 12px; }
+  .gpage .play { font: 600 14px var(--mono); padding: 8px 14px; border: 1px solid var(--gold); border-radius: 3px; text-decoration: none; }
+  .gpage section { margin-top: 26px; }
+  .gpage h2 { font: 700 22px/1.2 var(--disp); color: var(--milk); margin: 0 0 6px; }
+  .gpage a { color: var(--gold); }
+  .gtable .nr { text-align: right; font-variant-numeric: tabular-nums; }
+  .gtable td.rank { color: var(--gold); font-weight: 600; }
+  .gtable td.nm { color: var(--milk); font-weight: 600; }
+  .mine td.nm::after { content: ' (you)'; color: var(--dim); font-weight: 400; }
+</style>
+</head>
+<body>
+<main class="gpage">
+  <header>
+    <div><div class="title">Steppe Crawl</div><p class="dim" style="margin:.3em 0 0">Scores</p></div>
+    <a class="play" href="index.html">Play the game</a>
+  </header>
+  <p id="status" class="dim">Loading scores…</p>
+  <section><h2>Top 10 scores</h2><div id="top"></div></section>
+  <section><h2>10 most recent deaths</h2><div id="recent"></div></section>
+  <section id="minewrap" hidden><h2>Your recent games</h2><p class="dim">Games finished in this browser.</p><div id="mine"></div></section>
+  <p class="dim" style="margin-top:32px">Scores count experience, silver, kills, places reached, clan tamgas and, most of all, bringing the Ene Malka home. <a href="guide.html">Read the game guide</a>.</p>
+</main>
+<script src="js/config.js"></script>
+<script src="js/util.js"></script>
+<script src="js/scores.js"></script>
+<script>
+  const row = (e, i) => [i === null ? '' : i + 1, e.name, e.score, `${e.species} ${e.background}`, e.xl,
+    e.won ? 'brought the leaven home' : e.cause, `${e.place}, ${e.days} day${e.days === 1 ? '' : 's'} from home`, e.tamgas || 0, e.god || '—', e.kills, e.turns, ago(e.created_at)];
+  const HEAD = ['#', 'Name', 'Score', 'People and calling', 'Level', 'Fate', 'Where', 'Tamgas', 'Patron', 'Kills', 'Turns', 'When'];
+  function table(list, ranked) {
+    if (!list.length) return '<p class="dim">Nothing here yet.</p>';
+    return `<div class="gtable"><table><thead><tr>${HEAD.map((h, i) => `<th class="${[2, 4, 7, 9, 10].includes(i) ? 'nr' : ''}">${h}</th>`).join('')}</tr></thead><tbody>` +
+      list.map((e, i) => `<tr class="${e.mine ? 'mine' : ''}">${row(e, ranked ? i : null).map((c, j) =>
+        `<td class="${j === 0 ? 'rank' : j === 1 ? 'nm' : [2, 4, 7, 9, 10].includes(j) ? 'nr' : ''}">${esc(c)}</td>`).join('')}</tr>`).join('') + '</tbody></table></div>';
+  }
+  fetchScores(10).then(d => {
+    document.getElementById('top').innerHTML = table(d.top, true);
+    document.getElementById('recent').innerHTML = table(d.recent, false);
+    document.getElementById('status').textContent = d.online ? 'Scores from everyone who plays, on GitHub Pages and itch.io.'
+      : SCORES_ONLINE ? "The public scoreboard can't be reached right now; showing games played in this browser." : 'Showing games played in this browser.';
+    const mine = lsGet(LOCAL_SCORES_KEY, []);
+    if (d.online && mine.length) { document.getElementById('minewrap').hidden = false; document.getElementById('mine').innerHTML = table(mine.slice(0, 10), false); }
+  });
+</script>
+</body>
+</html>

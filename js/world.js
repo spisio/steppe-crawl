@@ -392,7 +392,7 @@ function die(cause, quit) {
   G.over = true; stopRun(); clearSave();
   const p = G.p;
   G.cause = quit ? 'rode home empty-handed' : `killed by ${cause}`;
-  msg(quit ? 'You ride home.' : 'You die...', '#e55a5a'); render();
+  msg(quit ? 'You ride home.' : 'You die...', '#e55a5a'); recordGame(); render();
   showEnd(quit ? 'Home without the leaven' : 'You have died', `${esc(p.name)} was ${quit ? 'riding home from' : 'killed by ' + esc(cause) + ' in'} ${esc(placeName())}, ${daysText()}.`);
 }
 const daysText = (id = G.cur) => { const d = daysFromHome(id); return `${d} day${d > 1 ? 's' : ''} from home`; };
@@ -419,7 +419,7 @@ function journeyLines() {
   return out;
 }
 function win() {
-  G.won = true; G.over = true; G.cause = 'brought the Ene Malka home'; stopRun(); clearSave(); render();
+  G.won = true; G.over = true; G.cause = 'brought the Ene Malka home'; stopRun(); clearSave(); recordGame(); render();
   showEnd('The Mother Leaven comes home', `${esc(G.p.name)} rides up the Qara-Chik road with the Ene Malka wrapped in white felt. In every valley behind, the herders will bake with it again, and the bards will add a verse.`);
 }
 function morgue() {
