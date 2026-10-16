@@ -97,7 +97,7 @@ function handleKey(k, code, ctrl) {
     case 'C': closeDoor(); return true;
     case '>': takeStairs(1); return true;
     case '<': takeStairs(-1); return true;
-    case '?': helpScreen(); return true;
+    case '?': guideMenu(); return true;
     case 'More': commandsMenu(); return true;
   }
   return false;

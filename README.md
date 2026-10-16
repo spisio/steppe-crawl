@@ -6,7 +6,9 @@ Ten valleys run out from the Qara-Chik road toward Manas Peak, each a day farthe
 
 ## Play
 
-Play in your browser at **https://spisio.github.io/steppe-crawl/**, or open `index.html` locally. A classic ASCII version is at **https://spisio.github.io/steppe-crawl/ascii.html** (`ascii.html`); both versions share the same saved game, and each title screen links to the other. There is no build step; fonts load from Google Fonts. Your game saves in the browser as you play.
+Play in your browser at **https://spisio.github.io/steppe-crawl/**, or open `index.html` locally. A classic ASCII version is at **https://spisio.github.io/steppe-crawl/ascii.html** (`ascii.html`); both versions share the same saved game, and each title screen links to the other.
+
+New to the game? Read the **[instructions and game guide](https://spisio.github.io/steppe-crawl/guide.html)** (`guide.html`), or press `?` in the game. There is no build step; fonts load from Google Fonts. Your game saves in the browser as you play.
 
 ## What's in it
 
@@ -37,6 +39,7 @@ Modelled on Crawl's systems, re-themed for Irad:
 | `z` `I` `M` | cast, list spells, memorise |
 | `a` `p` `^` | abilities, pray, patron |
 | `m` `%` `\` `Ctrl-P` | skills, character, discoveries, messages |
+| `?` | instructions and game guide |
 
 On a phone, use the on-screen pad and buttons (More has every command), or tap the map to travel and to aim.
 

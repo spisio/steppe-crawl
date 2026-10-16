@@ -83,3 +83,15 @@ textarea { width: 100%; margin-top: 8px; font: 12px/1.35 var(--mono); background
   .sk { width: 9.5em; }
 }
 @media (prefers-reduced-motion: reduce) { * { transition: none !important; } }
+
+/* guide */
+.guide { max-width: 78ch; }
+.guide p, .guide li { line-height: 1.55; }
+.guide ul, .guide ol { padding-left: 1.3em; margin: .4em 0; display: flex; flex-direction: column; gap: 3px; }
+.guide h3 { margin-top: 14px; }
+.gtable { overflow-x: auto; margin: 6px 0 10px; }
+.gtable table { border-collapse: collapse; width: 100%; font-size: 12px; }
+.gtable th { text-align: left; color: var(--dim); font-weight: 600; border-bottom: 1px solid var(--line); padding: 4px 8px 4px 0; }
+.gtable td { border-bottom: 1px solid #221f2e; padding: 5px 8px 5px 0; vertical-align: top; }
+.gtable td small { display: block; }
+.guide a, .gpage a { color: var(--gold); }

@@ -294,27 +294,11 @@ function lookText(x, y) {
   parts.push(cap(tn) + '.');
   return parts.join(' ');
 }
-function helpScreen() {
-  openMenu({ title: 'How to play', wide: true, items: [], text: `
-<div class="cols"><div>
-<h3>Moving</h3>Arrows, numpad, or <b class="gold">hjkl yubn</b>. Walk into a foe to attack.<br>
-<b class="gold">o</b> explore · <b class="gold">Tab</b> fight nearest · <b class="gold">5</b> rest · <b class="gold">s</b> wait<br>
-<b class="gold">&gt;</b> go on, <b class="gold">&lt;</b> go back (or travel to the way) · <b class="gold">G</b> or <b class="gold">O</b> travel to a place you've been<br>
-<b class="gold">x</b> look around · <b class="gold">C</b> close a door<br>Click or tap the map to travel.
-<h3>Items</h3><b class="gold">i</b> pack · <b class="gold">g</b> pick up · <b class="gold">d</b> drop<br><b class="gold">w</b> wield · <b class="gold">W</b> wear · <b class="gold">T</b> take off · <b class="gold">P</b> put on · <b class="gold">R</b> remove<br>
-<b class="gold">q</b> quaff · <b class="gold">r</b> read · <b class="gold">v</b> evoke · <b class="gold">f</b> fire or throw · <b class="gold">Q</b> choose quiver
-</div><div>
-<h3>Magic and patrons</h3><b class="gold">z</b> cast · <b class="gold">I</b> your spells · <b class="gold">M</b> memorise from library<br><b class="gold">a</b> abilities · <b class="gold">p</b> pray (altar, mazar) · <b class="gold">^</b> your patron
-<h3>Your character</h3><b class="gold">m</b> skills · <b class="gold">%</b> character · <b class="gold">\\</b> discoveries · <b class="gold">Ctrl-P</b> messages
-<h3>Aiming</h3>Arrows move the cursor, <b class="gold">Tab</b> picks the next target, <b class="gold">Enter</b> or <b class="gold">.</b> fires, <b class="gold">Esc</b> cancels.
-</div></div>
-<h3>The quest</h3><p>Ten valleys run out from the Qara-Chik road, each a day farther from home, joined by passes, fords and old tracks (<b class="gold">&gt;</b> goes on, <b class="gold">&lt;</b> goes back). Four regions off the road hide clan tamgas (<b class="gold">}</b>): the Arslanbob Woods, the Moiynkum Sands, the Old Kurgans and the Pass of the Black Blizzard. Carry three to the sealed cleft Under Manas Peak, ten days from home, to open the Hidden Valley of Janyl. Take the Ene Malka (<b style="color:#fff4c0">0</b>) from Morkhan's Herald and carry it all the way back to the Qara-Chik road.</p>
-<p class="dim">Like Crawl, you grow by training skills with experience (m), finding gear, and choosing a patron at an altar. Flasks, bark scrolls, shakeks and tumars are unknown until used. White is holy and black is Morkhan's. Your game saves in this browser.</p>` });
-}
+function helpScreen() { guideMenu(); }
 function commandsMenu() {
   const c = (key, label, fnKey) => ({ key, label, act: () => { closeMenu(); handleKey(fnKey || key); } });
   openMenu({ title: 'Commands', wide: true, items: [c('i', 'Pack'), c('m', 'Skills'), c('z', 'Cast a spell'), c('M', 'Memorise spells'), c('I', 'Your spells'), c('a', 'Abilities'), c('^', 'Patron'),
-    c('%', 'Character'), c('x', 'Look around'), c('O', 'Places and travel'), c('\\', 'Discoveries'), c('H', 'Message history'), c('Q', 'Choose quiver'), c('C', 'Close a door'), c('g', 'Pick up'), c('p', 'Pray'), c('?', 'Help')] });
+    c('%', 'Character'), c('x', 'Look around'), c('O', 'Places and travel'), c('\\', 'Discoveries'), c('H', 'Message history'), c('Q', 'Choose quiver'), c('C', 'Close a door'), c('g', 'Pick up'), c('p', 'Pray'), c('?', 'Guide')] });
 }
 
 // --- the end screen ---
@@ -336,15 +320,18 @@ function titleScreen() {
     ui = { title: 'title' }; ov.hidden = false;
     ov.innerHTML = `<div class="card wide">${head}
     ${sv && !sv.over ? `<div class="opt" id="cont"><span class="k">*)</span><span>Continue ${esc(sv.p.name)} <small>${SPECIES[sv.p.sp].n} ${BACKGROUNDS[sv.p.bg].n}, level ${sv.p.xl}, ${esc(levelName.call(null, sv.cur))}</small></span></div>` : ''}
+    <div class="opt" id="howto"><span class="k">?)</span><span>How to play <small>Controls, the quest, peoples and callings, skills, magic, patrons and items</small></span></div>
     <div class="row"><label for="nm">Name</label><input type="text" id="nm" value="${esc(name)}" maxlength="40"><button id="rn">Random name</button></div>
     <h3>Choose your people</h3><div class="cols">${SPECIES_ORDER.map((k, i) => `<div class="opt" data-s="${k}"><span class="k">${letter(i)})</span><span>${SPECIES[k].n}<small>${esc(SPECIES[k].desc)}</small></span></div>`).join('')}</div></div>`;
     const nm = document.getElementById('nm'); nm.oninput = () => name = nm.value;
     document.getElementById('rn').onclick = () => { name = randomName(); nm.value = name; };
     ov.querySelectorAll('[data-s]').forEach(el => el.onclick = () => { sp = el.dataset.s; step2(); });
     const c = document.getElementById('cont'); if (c) c.onclick = cont;
+    document.getElementById('howto').onclick = () => guideMenu();
     ui.key = k => {
       if (document.activeElement === nm && k !== 'Enter') return false;
       if (k === '*' && sv && !sv.over) { cont(); return true; }
+      if (k === '?') { guideMenu(); return true; }
       const i = LETTERS.indexOf(k); if (k.length === 1 && i >= 0 && i < SPECIES_ORDER.length) { sp = SPECIES_ORDER[i]; step2(); return true; }
       return false;
     };
