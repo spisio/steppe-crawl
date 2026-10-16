@@ -429,7 +429,7 @@ function shareText() {
   const how = G.won ? `brought the Ene Malka home${tam}!`
     : G.cause === 'rode home empty-handed' ? `rode home empty-handed from ${placeName()}, ${daysText()}.`
     : `was ${G.cause} in ${placeName()}, ${daysText()}.`;
-  return `${who} ${how} Score: ${score().toLocaleString('en-US')}.\nSteppe Crawl, a roguelike set in Irad:`;
+  return `${who} ${how} Score: ${score().toLocaleString('en-US')}.\n\nSteppe Crawl, a roguelike set in Irad:`;
 }
 function morgue() {
   const p = G.p, S = SPc(), B = BGc();

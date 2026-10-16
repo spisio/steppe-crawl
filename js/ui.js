@@ -315,7 +315,7 @@ function showEnd(title, text) {
     else copy(full, 'Copied the post and link. Paste it anywhere.', 'sharebox');
   };
   openMenu({ title, locked: true, text: `${text}<br><span class="gold">Score: ${score()}</span>
-    <div class="sharecard"><h3>Share your ${G.won ? 'victory' : 'fate'}</h3><textarea id="sharebox" class="sharebox" readonly rows="4" aria-label="Post to share">${esc(full)}</textarea><p class="sharenote" id="sharenote" role="status"></p></div>
+    <div class="sharecard"><h3>Share your ${G.won ? 'victory' : 'fate'}</h3><textarea id="sharebox" class="sharebox" readonly rows="5" aria-label="Post to share">${esc(full)}</textarea><p class="sharenote" id="sharenote" role="status"></p></div>
     <textarea id="dump" readonly rows="12" aria-label="Character file">${esc(dump)}</textarea>`,
     items: [{ key: 's', label: navigator.share ? 'Share your story' : 'Copy post and link', sub: 'A short post about this run, with a link to the game', act: share },
       { key: 'c', label: 'Copy character file', act: () => copy(dump, 'Copied the character file.', 'dump') },
