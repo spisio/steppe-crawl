@@ -393,7 +393,30 @@ function die(cause, quit) {
   const p = G.p;
   G.cause = quit ? 'rode home empty-handed' : `killed by ${cause}`;
   msg(quit ? 'You ride home.' : 'You die...', '#e55a5a'); render();
-  showEnd(quit ? 'Home without the leaven' : 'You have died', `${esc(p.name)} was ${quit ? 'riding home from' : 'killed by ' + esc(cause) + ' in'} ${esc(placeName())} (${levelName()}).`);
+  showEnd(quit ? 'Home without the leaven' : 'You have died', `${esc(p.name)} was ${quit ? 'riding home from' : 'killed by ' + esc(cause) + ' in'} ${esc(placeName())}, ${daysText()}.`);
+}
+const daysText = (id = G.cur) => { const d = daysFromHome(id); return `${d} day${d > 1 ? 's' : ''} from home`; };
+// The journey, for the character file: how far you got, the valleys you crossed, the regions you explored.
+function journeyLines() {
+  const p = G.p, out = [];
+  const far = p.visited.reduce((best, id) => daysFromHome(id) > daysFromHome(best) ? id : best, p.visited[0] || 'V:1');
+  const fd = daysFromHome(far);
+  out.push(`Farthest from home: ${fd} day${fd > 1 ? 's' : ''}, in ${placeName(far)}.`);
+  const valleys = p.visited.filter(id => id.startsWith('V:')).map(id => +id.split(':')[1]).sort((a, b) => a - b);
+  out.push(`Valleys reached: ${valleys.length} of ${BRANCHES.V.depth}.`);
+  for (const d of valleys) out.push(`  Day ${String(d).padStart(2)}  ${VALLEY_THEMES[d].name}`);
+  const regions = BRANCH_ORDER.filter(b => b !== 'V' && p.visited.some(id => id.startsWith(b + ':')));
+  out.push(regions.length ? 'Regions explored:' : 'Regions explored: none.');
+  for (const b of regions) {
+    const B = BRANCHES[b], deep = Math.max(...p.visited.filter(id => id.startsWith(b + ':')).map(id => +id.split(':')[1]));
+    const notes = [];
+    if (B.depth > 1) notes.push(deep >= B.depth ? `all ${B.depth} areas` : `${deep} of ${B.depth} areas`);
+    if (B.boss && G.uniques[B.boss] === 'dead') notes.push(`slew ${MT[B.boss].n}`);
+    if (B.tamga && p.tamgas.includes(B.tamga)) notes.push(`took the ${TAMGAS[B.tamga].n}`);
+    if (b === 'hidden' && p.orb) notes.push('took the Ene Malka');
+    out.push(`  ${cap(B.n)}${notes.length ? ': ' + notes.join('; ') : ''}`);
+  }
+  return out;
 }
 function win() {
   G.won = true; G.over = true; G.cause = 'brought the Ene Malka home'; stopRun(); clearSave(); render();
@@ -402,14 +425,14 @@ function win() {
 function morgue() {
   const p = G.p, S = SPc(), B = BGc();
   const lines = [];
-  lines.push(`Steppe Crawl ${VERSION}: character file`, '', `${p.name} the ${S.n} ${B.n}, level ${p.xl}`, `Score ${score()}. ${G.cause || 'Still alive'}, ${placeName()} (${levelName()}), turn ${Math.floor(G.turn)}.`, '');
+  lines.push(`Steppe Crawl ${VERSION}: character file`, '', `${p.name} the ${S.n} ${B.n}, level ${p.xl}`, `Score ${score()}. ${cap(G.cause || 'still alive')} in ${placeName()}, ${daysText()}, on turn ${Math.floor(G.turn)}.`, '');
   lines.push(`HP ${Math.max(0, p.hp)}/${maxHP()}  MP ${p.mp}/${maxMP()}  AC ${AC()}  EV ${EV()}  SH ${SH()}  Str ${stat('str')}  Int ${stat('int')}  Dex ${stat('dex')}`);
   lines.push(`Patron: ${p.god ? GODS[p.god].n + ' ' + '*'.repeat(stars()) : 'none'}   Silver: ${p.gold}   Tamgas: ${p.tamgas.map(t => TAMGAS[t].n).join(', ') || 'none'}`, '');
   lines.push('Inventory:'); p.inv.forEach((it, i) => { if (it) lines.push(`  ${letter(i)} - ${itemName(it)}${it.eq ? ' (' + SLOT_NAMES[it.eq] + ')' : ''}`); });
   lines.push('', 'Skills:'); SKILLS.filter(s => sk(s.id) > 0).forEach(s => lines.push(`  ${s.n.padEnd(16)} ${skf(s.id).toFixed(1)}`));
   if (p.spells.length) { lines.push('', 'Spells:'); p.spells.forEach(s => lines.push(`  ${SPELLS[s].n.padEnd(28)} level ${SPELLS[s].lvl}  ${spellFail(s)}% fail`)); }
   if (Object.keys(p.muts).length) { lines.push('', 'Mutations:'); for (const m in p.muts) lines.push('  ' + MUTS[m].d(p.muts[m])); }
-  lines.push('', 'Places visited: ' + p.visited.map(levelName).join(', '));
+  lines.push('', 'The journey:'); journeyLines().forEach(l => lines.push('  ' + l));
   lines.push('', 'Kills: ' + G.kills + '.'); Object.entries(G.killList).sort((a, b) => b[1] - a[1]).slice(0, 25).forEach(([n, c]) => lines.push(`  ${c} ${n}`));
   lines.push('', 'Last messages:'); G.msgs.slice(-12).forEach(m => lines.push('  ' + m.t));
   return lines.join('\n');
