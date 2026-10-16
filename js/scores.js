@@ -13,15 +13,7 @@ function lsGet(k, d) { try { const v = localStorage.getItem(k); return v === nul
 function lsSet(k, v) { try { localStorage.setItem(k, JSON.stringify(v)); } catch (e) { /* storage unavailable */ } }
 const shareScores = () => lsGet(SHARE_KEY, true) !== false;
 const setShareScores = on => lsSet(SHARE_KEY, !!on);
-
-// A short list of words that should not appear as public names.
-const NAME_BLOCK = ['fuck', 'shit', 'cunt', 'nigg', 'fag', 'rape', 'nazi', 'hitler', 'whore', 'bitch', 'slut', 'retard'];
-function cleanName(n) {
-  n = String(n || '').replace(/[\u0000-\u001f\u007f<>]/g, '').replace(/\s+/g, ' ').trim().slice(0, 40);
-  const flat = n.toLowerCase().replace(/[^a-zа-яё]/g, '');
-  if (!n || NAME_BLOCK.some(w => flat.includes(w))) return 'A nameless rider';
-  return n;
-}
+// Names are cleaned with cleanName() from namefilter.js before they are posted.
 
 // Called when a game ends.
 function recordGame() {

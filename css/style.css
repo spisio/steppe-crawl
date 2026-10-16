@@ -109,3 +109,5 @@ textarea { width: 100%; margin-top: 8px; font: 12px/1.35 var(--mono); background
 .sclist small { display: block; color: var(--dim); }
 .share { display: flex; gap: 8px; align-items: flex-start; margin-top: 10px; color: var(--dim); font-size: 12px; cursor: pointer; }
 .share input { margin-top: 2px; accent-color: var(--gold); }
+.nameerr { color: #ff8a8a; margin: -.2em 0 .6em; font-size: 12px; }
+input[type=text].bad { border-color: #e55a5a; }
