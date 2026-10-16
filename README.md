@@ -1,31 +1,45 @@
 # Steppe Crawl
 
-A roguelike set in Irad, in the tradition of [Dungeon Crawl Stone Soup](https://crawl.develz.org/).
+A roguelike set in Irad, in the tradition of [Dungeon Crawl Stone Soup](https://github.com/crawl/crawl).
 
-Twelve valleys run down from the Qara-Chik road into the dark. At the bottom of the last, in the ruin of the First Church, waits the **Ene Malka**, the Mother Leaven of St. Janyl, and the bull-headed Herald of Morkhan who keeps it. Bring the leaven home.
+Twelve valleys run down from the Qara-Chik road into the dark. Clan tamgas lie in four wild regions; three of them open the hidden track to the ruin of the First Church, where the **Ene Malka**, the Mother Leaven of St. Janyl, waits with the bull-headed Herald of Morkhan. Bring the leaven home.
 
 ## Play
 
-Play in your browser at **https://spisio.github.io/steppe-crawl/**, or open `index.html` locally. It is a single file with no build step; fonts load from Google Fonts. Your game saves in the browser as you play.
+Play in your browser at **https://spisio.github.io/steppe-crawl/**, or open `index.html` locally. There is no build step; fonts load from Google Fonts. Your game saves in the browser as you play.
 
-## Peoples and callings
+## What's in it
 
-- **Peoples:** Iradi, Tash-Kishi (stone folk), Peri, Dev-born, At-Kishi (horse-folk), Börü-kin (wolf-folk), Ajdaha-born (dragon kin)
-- **Callings:** Baatyr (warrior), Berkutchi (eagle hunter, bow), Ïrchy (bard), Kashysh (priest), Bakshy (shaman)
+Modelled on Crawl's systems, re-themed for Irad:
+
+- **8 peoples** with Crawl-style aptitudes: Iradi, Tash-Kishi, Peri, Dev-born, At-Kishi, Börü-kin, Ajdaha-born, Kichi.
+- **9 callings**: Baatyr, Berkutchi (with a golden eagle companion), Ïrchy, Jaychy, Kashysh, Bakshy, Tabyp, Ulakchy, Soodager.
+- **28 skills** trained by experience, with manual or automatic training and focus, as in Crawl. Weapon skill speeds up attacks down to a minimum delay.
+- **37 spells** in 10 schools, a spell library filled by books, memorisation by spell levels, and failure rates using the same inputs as Crawl's formula.
+- **6 patrons** with piety, conduct, wrath and invoked abilities: St. Janyl, Kambar-Ata, Umay, Kök Tengri, Morkhan, and Kydyr-Ata (who deals in silver).
+- **29 floors in 8 regions**: the Valleys, the White Yurts (every altar), the Smugglers' Tunnels, the Arslanbob Woods, the Moiynkum Sands, the Old Kurgans, the Pass of the Black Blizzard, and the Hidden Valley of Janyl. Each region has its own map generator, monsters and boss.
+- **About 60 creatures** with spells, packs and bands, resistances and sleeping, wandering and hunting behaviour, including uniques such as Tökö the Marmot King, Mystan Kempir and Jelmoguz the Seven-Headed.
+- **Item identification** (flasks, bark scrolls, shakeks, tumars), weapon brands, armour egos, wands, magic staves, evocables that recharge with experience, eight artefacts, shops, traps, doors, clouds, mutations and corpses for necromancy.
+- **Crawl conveniences**: auto-explore, auto-fight, rest, travel between levels, a targeting cursor, look mode, a monster threat list, and a character file when the game ends.
 
 ## Keys
 
 | Key | Action |
 | --- | --- |
 | arrows, numpad, `hjklyubn` | move; walk into a foe to attack |
-| `o` | auto-explore |
-| `Tab` | fight the nearest foe |
-| `5` / `s` | rest / wait one turn |
-| `>` `<` | take or travel to a pass |
-| `g` `i` `d` | pick up, pack, drop |
+| `o` / `Tab` / `5` / `s` | explore / fight nearest / rest / wait |
+| `>` `<` | use a pass, or travel to one |
+| `G` or `O` | travel to a place you've been |
+| `x` | look around |
+| `i` `g` `d` | pack, pick up, drop |
 | `w` `W` `T` `P` `R` | wield, wear, take off, put on, remove |
-| `q` `r` `v` | quaff, read, evoke |
-| `z` `f` `a` `p` | cast, fire bow, ability, pray at a mazar |
-| `m` `?` | bestiary, help |
+| `q` `r` `v` `f` `Q` | quaff, read, evoke, fire or throw, choose quiver |
+| `z` `I` `M` | cast, list spells, memorise |
+| `a` `p` `^` | abilities, pray, patron |
+| `m` `%` `\` `Ctrl-P` | skills, character, discoveries, messages |
 
-On a phone, use the on-screen pad and buttons, or tap the map to travel.
+On a phone, use the on-screen pad and buttons (More has every command), or tap the map to travel and to aim.
+
+## Code
+
+Plain JavaScript, no dependencies. Data tables live in `js/data/` (species, skills, items, monsters, spells, patrons, regions and vaults); the engine is split into `levelgen`, `fov`, `player`, `items`, `combat`, `monsters`, `magic`, `religion`, `world`, `ui` and `input`.
